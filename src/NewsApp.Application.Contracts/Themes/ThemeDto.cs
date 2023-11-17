@@ -1,4 +1,5 @@
-﻿using NewsApp.User;
+﻿using NewsApp.News;
+using NewsApp.User;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,6 +11,9 @@ namespace NewsApp.Themes
     {
         public string Name { get; set; }
         public UserDto User { get; set; }
-        public ICollection<ThemeDto> Themes { get; set; }
+        public ICollection<ThemeDto>? Themes { get; set; } 
+
+        public ICollection<NewsDto>? listNews { get; set; }
+
     }
 }

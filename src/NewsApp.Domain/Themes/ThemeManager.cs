@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using NewsApp.News;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace NewsApp.Themes
             _repository = repository;
         }
 
-        public async Task<Theme> CreateAsyncOrUpdate(int? id, string name, int? parentId, IdentityUser identityUser)
+        public async Task<Theme> CreateAsyncOrUpdate(int? id, string name, int? parentId, Volo.Abp.Identity.IdentityUser identityUser)
         {
             Theme theme = null;            
 
@@ -45,5 +46,15 @@ namespace NewsApp.Themes
 
             return theme;
         }
+
+        public async Task<Theme> AddNew(NewsEntidad newsEntidad, int? idTema)
+        {
+            Theme theme = null;
+            theme = await _repository.GetAsync(idTema.Value, includeDetails: true);
+
+            theme.listNews.Add(newsEntidad);
+            return theme;
+        }
+
     }
 }

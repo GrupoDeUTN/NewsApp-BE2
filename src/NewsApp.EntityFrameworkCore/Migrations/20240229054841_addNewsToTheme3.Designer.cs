@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NewsApp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace NewsApp.Migrations
 {
     [DbContext(typeof(NewsAppDbContext))]
-    partial class NewsAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240229054841_addNewsToTheme3")]
+    partial class addNewsToTheme3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,34 +36,40 @@ namespace NewsApp.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Author")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Content")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("PublishedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ThemeId")
+                    b.Property<int?>("ThemeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Url")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UrlToImage")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ThemeId");
 
-                    b.ToTable("AppNews", (string)null);
+                    b.ToTable("NewsEntidad");
                 });
 
             modelBuilder.Entity("NewsApp.Themes.Theme", b =>
@@ -1751,9 +1760,7 @@ namespace NewsApp.Migrations
                 {
                     b.HasOne("NewsApp.Themes.Theme", null)
                         .WithMany("listNews")
-                        .HasForeignKey("ThemeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ThemeId");
                 });
 
             modelBuilder.Entity("NewsApp.Themes.Theme", b =>

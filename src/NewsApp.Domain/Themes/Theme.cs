@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NewsApp.News;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,10 +15,18 @@ namespace NewsApp.Themes
         public IdentityUser User { get; set; }
         public ICollection<Theme> Themes { get; set;}
 
+        public ICollection<NewsEntidad> listNews { get; set; } 
+
         public Theme()
         {
             this.Themes = new List<Theme>();
+            this.listNews = new List<NewsEntidad>();
+
         }
+
+        public Guid UserId { get; set; } // Propiedad de clave externa
+
+
 
     }
 }

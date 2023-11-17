@@ -16,6 +16,6 @@ public class NewsAppApplicationAutoMapperProfile : Profile
         CreateMap<Theme, ThemeDto>();
         CreateMap<IdentityUser, UserDto>();
         CreateMap<NewsDto, ArticleDto>().ReverseMap();
-        
+        CreateMap<NewsEntidad, NewsDto>().ReverseMap();
     }
 }

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Volo.Abp.Application.Dtos;
 
 namespace NewsApp.News
 {
-    public class NewsDto
+    public class NewsDto : EntityDto<int>
     {
         public string Author { get; set; }
 

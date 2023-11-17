@@ -1,10 +1,7 @@
-﻿using NewsApp.Themes;
-using System;
+﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Volo.Abp.Domain.Repositories;
 
 namespace NewsApp.News
 {
@@ -23,5 +20,25 @@ namespace NewsApp.News
 
             return ObjectMapper.Map<ICollection<ArticleDto>, ICollection<NewsDto>>(news);            
         }
+
+        public NewsDto SeleccionarNewsDeBusqueda(ICollection<NewsDto> resultados, string author)
+        {
+            var newBusqueda = resultados.FirstOrDefault(x => x.Author == author);
+            return newBusqueda;
+        }
+
+        //public async Task<NewsDto> AgregarNoticia2(int idTema, string busqueda, string autor)
+        //{
+        //    var resultados = await Search(busqueda);
+        //    var noticia = SeleccionarNewsDeBusqueda(resultados, autor);
+        //    var noticiaEntidad = ObjectMapper.Map<NewsDto, NewsEntidad>(noticia);
+        //    noticiaEntidad.ThemeId = idTema;
+
+        //   await _newsManager.CreateAsyncNews(noticiaEntidad);
+
+        //    return noticia;
+
+        //}
+
     }
 }

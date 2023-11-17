@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NewsApp.News;
 using NewsApp.Themes;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -58,10 +59,11 @@ public class NewsAppDbContext :
     #region Entidades de dominio
 
     public DbSet<Theme> Themes { get; set; }
+    public DbSet<NewsEntidad> NewsEntidad{ get; set; }
 
-    #endregion
+#endregion
 
-    public NewsAppDbContext(DbContextOptions<NewsAppDbContext> options)
+public NewsAppDbContext(DbContextOptions<NewsAppDbContext> options)
         : base(options)
     {
 
@@ -82,21 +84,25 @@ public class NewsAppDbContext :
         builder.ConfigureFeatureManagement();
         builder.ConfigureTenantManagement();
 
-        /* Configure your own tables/entities inside here */
 
-        //builder.Entity<YourEntity>(b =>
-        //{
-        //    b.ToTable(NewsAppConsts.DbTablePrefix + "YourEntities", NewsAppConsts.DbSchema);
-        //    b.ConfigureByConvention(); //auto configure for the base class props
-        //    //...
-        //});
 
         // Entidad Theme
+        builder.Entity<NewsEntidad>(b => {
+            b.ToTable(NewsAppConsts.DbTablePrefix + "News", NewsAppConsts.DbSchema);
+            b.ConfigureByConvention();
+        });
+
+
+
         builder.Entity<Theme>(b =>
         {
             b.ToTable(NewsAppConsts.DbTablePrefix + "Themes", NewsAppConsts.DbSchema);
             b.ConfigureByConvention();
-            b.Property(x => x.Name).IsRequired().HasMaxLength(128);            
+            b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+
         });
+
+
+
     }
 }
