@@ -86,13 +86,14 @@ public NewsAppDbContext(DbContextOptions<NewsAppDbContext> options)
 
 
 
-        // Entidad Theme
+        // Entidad News
         builder.Entity<NewsEntidad>(b => {
             b.ToTable(NewsAppConsts.DbTablePrefix + "News", NewsAppConsts.DbSchema);
             b.ConfigureByConvention();
         });
 
 
+        // Entidad Themes
 
         builder.Entity<Theme>(b =>
         {

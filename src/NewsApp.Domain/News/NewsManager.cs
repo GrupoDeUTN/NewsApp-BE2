@@ -18,9 +18,20 @@ namespace NewsApp.News
         }
 
 
-        public async Task CreateAsyncNews(NewsEntidad newsEntidad)
+        public async Task<int> CreateAsyncNews(NewsEntidad newsEntidad)
         {
-           await _repository.InsertAsync(newsEntidad);
+            // Inserta la entidad y guarda cambios en la base de datos
+            await _repository.InsertAsync(newsEntidad, autoSave: true); // Asegúrate de que autoSave esté en true
+
+            // Verifica que el ID fue generado correctamente
+            if (newsEntidad.Id == 0)
+            {
+                throw new Exception("Error al guardar la noticia, el ID generado es 0.");
+            }
+
+            // Retorna el ID de la entidad que fue generada automáticamente
+            return newsEntidad.Id;
         }
+
     }
 }

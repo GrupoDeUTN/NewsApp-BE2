@@ -14,6 +14,7 @@ namespace NewsApp.Themes
         public string Name  { get; set; }
         public IdentityUser User { get; set; }
         public ICollection<Theme> Themes { get; set;}
+        public int? ThemeId { get; set; }  // This represents the parent theme's ID
 
         public ICollection<NewsEntidad> listNews { get; set; } 
 
