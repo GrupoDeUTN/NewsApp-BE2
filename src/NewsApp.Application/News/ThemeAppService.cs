@@ -37,17 +37,26 @@ namespace NewsApp.Themes
 
         public async Task<ICollection<ThemeDto>> GetThemesAsync()
         {
-            var themes = await _repository.GetListAsync(includeDetails: true);
+            var userGuid = CurrentUser.Id.GetValueOrDefault();
 
-            return ObjectMapper.Map<ICollection<Theme>, ICollection<ThemeDto>>(themes);
+            var identityUser = await _userManager.FindByIdAsync(userGuid.ToString());
+
+            var themes = await _repository.GetListAsync(includeDetails: true ) ;
+          
+            var userThemes = themes.Where(x => x.User == identityUser && x.ThemeId == null ).ToList();
+
+            return ObjectMapper.Map<ICollection<Theme>, ICollection<ThemeDto>>(userThemes);
         }
 
         public async Task<ThemeDto> GetThemesAsync(int id)
+
         {
-            var queryable = await _repository.WithDetailsAsync(x => x.Themes);
+            var userGuid = CurrentUser.Id.GetValueOrDefault();
+            var identityUser = await _userManager.FindByIdAsync(userGuid.ToString());
 
-            var query = queryable.Where(x => x.Id == id);
-
+            // Obtener el tema
+            var queryable = await _repository.WithDetailsAsync(x => x.listNews, x=>x.Themes); // Incluye las noticias del tema
+            var query = queryable.Where(x => x.Id == id && x.User == identityUser);
             var theme = await AsyncExecuter.FirstOrDefaultAsync(query);
 
             return ObjectMapper.Map<Theme, ThemeDto>(theme);
@@ -78,26 +87,134 @@ namespace NewsApp.Themes
 
         public async Task DeleteAsync(int id)
         {
-            // Primero, encuentra la entidad Theme basada en el id 
-            var theme = await _repository.FindAsync(id);
+            var userGuid = CurrentUser.Id.GetValueOrDefault();
+            var identityUser = await _userManager.FindByIdAsync(userGuid.ToString());
 
-            // Verifica si se encontró la entidad antes de intentar eliminarla.
-            if (theme != null)
+            var queryable = await _repository.WithDetailsAsync(x => x.Themes, x => x.listNews); // Incluye tanto los temas hijos como las noticias
+            var query = queryable.Where(x => x.Id == id && x.User == identityUser);
+            var theme = await AsyncExecuter.FirstOrDefaultAsync(query);
+
+            if (theme == null)
             {
-                await _repository.DeleteAsync(theme, autoSave: true);
+                throw new Exception("Tema no encontrado o no pertenece al usuario actual.");
             }
+
+            // Llamada recursiva para eliminar el tema y todo su contenido
+            await DeleteThemeRecursively(theme);
         }
 
-        public async Task<NewsDto> AgregarNoticia2(int idTema, string busqueda, string autor)
+
+
+
+        private async Task DeleteThemeRecursively(Theme theme)
         {
+            // Primero, eliminar todas las noticias asociadas al tema actual
+            if (theme.listNews != null && theme.listNews.Any())
+            {
+                await DeleteNewsFromTheme(theme);
+            }
+
+            // Luego, proceder con la eliminación recursiva de los temas hijos
+            if (theme.Themes != null && theme.Themes.Any())
+            {
+                foreach (var childTheme in theme.Themes.ToList())
+                {
+                    await DeleteThemeRecursively(childTheme);
+                }
+            }
+
+            // Finalmente, eliminar el tema
+            await _repository.DeleteAsync(theme, autoSave: true);
+        }
+
+        private async Task DeleteNewsFromTheme(Theme theme)
+        {
+
+            if (theme.listNews != null && theme.listNews.Any())
+            {
+                foreach (var news in theme.listNews.ToList())
+                {
+                    // Aquí podrías manejar la eliminación de la noticia según sea necesario
+                    // por ejemplo, eliminar de un repositorio de noticias si existe o simplemente eliminarla de la lista.
+                    theme.listNews.Remove(news);
+
+                }
+            }
+
+            // Actualizar el tema en el repositorio para reflejar los cambios
+            await _repository.UpdateAsync(theme, autoSave: true);
+        }
+
+        //probando con autor ---> 3010, Argentina, Steven Levy
+        public async Task<NewsDto> AgregarNoticia(int idTema, string busqueda, string autor)
+
+        {
+            //Obtener el tema 
+            var userGuid = CurrentUser.Id.GetValueOrDefault();
+
+            var identityUser = await _userManager.FindByIdAsync(userGuid.ToString());
+
+            var queryable = await _repository.WithDetailsAsync(x => x.Themes);
+
+            var query = queryable.Where(x => x.Id == idTema && x.User == identityUser);
+
+            var theme = await AsyncExecuter.FirstOrDefaultAsync(query);
+
+            //Obtener noticia
             var resultados = await _newsAppService.Search(busqueda);
+
             var noticia = _newsAppService.SeleccionarNewsDeBusqueda(resultados, autor);
+
             var noticiaEntidad = ObjectMapper.Map<NewsDto, NewsEntidad>(noticia);
+
+            //Agregar noticia al tema
+
             noticiaEntidad.ThemeId = idTema;
 
-            await _newsManager.CreateAsyncNews(noticiaEntidad);
+           var IdNoticia = await _newsManager.CreateAsyncNews(noticiaEntidad);
 
-            return noticia;
+          // await  _themeManager.AddNewAsync(IdNoticia, theme);
+
+           await _repository.UpdateAsync(theme, autoSave: true);
+
+           noticia.Id = IdNoticia;
+
+           return noticia;
+
+
+        }
+
+
+
+        public async Task DeleteNewFromTheme(int idNew, int idTheme)
+        {
+            var userGuid = CurrentUser.Id.GetValueOrDefault();
+            var identityUser = await _userManager.FindByIdAsync(userGuid.ToString());
+
+            // Obtener el tema
+            var queryable = await _repository.WithDetailsAsync(x => x.listNews); // Incluye las noticias del tema
+            var query = queryable.Where(x => x.Id == idTheme && x.User == identityUser);
+            var theme = await AsyncExecuter.FirstOrDefaultAsync(query);
+
+            if (theme == null)
+            {
+                throw new Exception("Tema no encontrado o no pertenece al usuario actual.");
+            }
+
+            // Buscar la noticia dentro del tema
+            var newsToDelete = theme.listNews.FirstOrDefault(news => news.Id == idNew);
+
+            if (newsToDelete == null)
+            {
+                throw new Exception("Noticia no encontrada en el tema especificado.");
+            }
+
+            // Eliminar la noticia del tema
+            theme.listNews.Remove(newsToDelete);
+
+            // Guardar cambios en el repositorio
+            await _repository.UpdateAsync(theme, autoSave: true);
+
 
         }
 

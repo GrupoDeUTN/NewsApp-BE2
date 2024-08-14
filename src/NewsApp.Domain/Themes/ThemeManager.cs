@@ -15,9 +15,11 @@ namespace NewsApp.Themes
     public class ThemeManager : DomainService
     {
         private readonly IRepository<Theme, int> _repository;
-        public ThemeManager(IRepository<Theme, int> repository)
+        private readonly IRepository<NewsEntidad, int> _repositoryNew;
+        public ThemeManager(IRepository<Theme, int> repository, IRepository<NewsEntidad, int> repositoryNew)
         {
             _repository = repository;
+            _repositoryNew = repositoryNew;
         }
 
         public async Task<Theme> CreateAsyncOrUpdate(int? id, string name, int? parentId, Volo.Abp.Identity.IdentityUser identityUser)
@@ -47,14 +49,27 @@ namespace NewsApp.Themes
             return theme;
         }
 
-        public async Task<Theme> AddNew(NewsEntidad newsEntidad, int? idTema)
+        public async Task AddNewAsync(int idNoticia, Theme theme)
         {
-            Theme theme = null;
-            theme = await _repository.GetAsync(idTema.Value, includeDetails: true);
+            if (theme == null)
+            {
+                throw new ArgumentNullException(nameof(theme), "El tema no puede ser nulo.");
+            }
 
+            // Obtener la noticia desde el repositorio usando el id
+            var newsEntidad = await _repositoryNew.GetAsync(idNoticia, includeDetails: true);
+
+            if (newsEntidad == null)
+            {
+                throw new ArgumentException("La noticia especificada no existe.", nameof(idNoticia));
+            }
+
+            // Agregar la noticia al tema
             theme.listNews.Add(newsEntidad);
-            return theme;
-        }
 
+          
+            
+        }
     }
+
 }
