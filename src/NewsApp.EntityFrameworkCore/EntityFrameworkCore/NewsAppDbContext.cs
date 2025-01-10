@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NewsApp.Alert;
 using NewsApp.News;
 using NewsApp.Themes;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -61,6 +62,8 @@ public class NewsAppDbContext :
     public DbSet<Theme> Themes { get; set; }
     public DbSet<NewsEntidad> NewsEntidad{ get; set; }
 
+    public DbSet<AlertEntidad> AlertEntidad { get; set; } 
+
 #endregion
 
 public NewsAppDbContext(DbContextOptions<NewsAppDbContext> options)
@@ -102,6 +105,15 @@ public NewsAppDbContext(DbContextOptions<NewsAppDbContext> options)
             b.Property(x => x.Name).IsRequired().HasMaxLength(128);
 
         });
+
+        //Entidad Alert 
+
+        builder.Entity<AlertEntidad>(b =>
+        {
+            b.ToTable(NewsAppConsts.DbTablePrefix + "Alerts", NewsAppConsts.DbSchema); // Nombre de la tabla con prefijo y esquema
+            b.ConfigureByConvention(); // Configuración estándar de ABP Framework
+        });
+
 
 
 

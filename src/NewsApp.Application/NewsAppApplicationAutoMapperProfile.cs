@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using NewsAPI.Models;
 using NewsApp.News;
 using NewsApp.Themes;
 using NewsApp.User;
+using NewsApp.Alert;
 using Volo.Abp.Identity;
 
 namespace NewsApp;
@@ -17,5 +19,6 @@ public class NewsAppApplicationAutoMapperProfile : Profile
         CreateMap<IdentityUser, UserDto>();
         CreateMap<NewsDto, ArticleDto>().ReverseMap();
         CreateMap<NewsEntidad, NewsDto>().ReverseMap();
+        CreateMap<AlertEntidad, AlertDto>();
     }
 }
