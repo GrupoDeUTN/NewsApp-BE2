@@ -61,7 +61,7 @@ namespace NewsApp
             var identityUser = await _userManager.FindByIdAsync(userGuid.ToString());
 
             // Truncar la fecha para conservar solo día, mes y año
-            var fechaCreacion = DateTime.UtcNow.Date;
+            var fechaCreacion = DateTime.UtcNow.AddDays(-7); // Fecha una semana atrás (PARA PROBAR DESP BORRAR)
 
             // Verificar si el ID ya existe en la base de datos
             var existingAlert = await _repository.FirstOrDefaultAsync(x => x.Id == input.Id);

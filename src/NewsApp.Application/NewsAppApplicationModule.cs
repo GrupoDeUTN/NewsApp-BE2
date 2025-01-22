@@ -30,7 +30,9 @@ public class NewsAppApplicationModule : AbpModule
             options.AddMaps<NewsAppApplicationModule>();
         });
 
-        //se registra el servicio de noticias. Deberia registrarse solo, pero como me dio error lo incorporo aca
+        //se registra el servicio de noticias. Deberia registrarse solo, pero como me dio error lo incorporo aca:
         context.Services.AddTransient<INewsService, NewsApiService>();
+        context.Services.AddHostedService<NewsBackgroundAppService>();
+
     }
 }

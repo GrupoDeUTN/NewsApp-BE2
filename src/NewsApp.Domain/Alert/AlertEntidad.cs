@@ -8,6 +8,7 @@ using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
 using Volo.Abp.Identity;
 using Volo.Abp.Domain.Entities;
+using NewsApp.Notification;
 
 
 namespace NewsApp.Alert
@@ -25,6 +26,8 @@ namespace NewsApp.Alert
         public Guid UserId { get; set; } // Propiedad de clave externa
 
 
+        // Relación uno a muchos con NotificationEntidad
+        public ICollection<NotificationEntidad>? Notificaciones { get; set; } // Lista de notificaciones
 
     }
 }

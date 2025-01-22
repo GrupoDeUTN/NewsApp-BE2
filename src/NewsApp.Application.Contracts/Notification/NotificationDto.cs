@@ -15,5 +15,7 @@ namespace NewsApp.Notification
 
         public int CantidadNoticiasNuevas { get; set; }
 
+        public int AlertId { get; set; }
+
     }
 }

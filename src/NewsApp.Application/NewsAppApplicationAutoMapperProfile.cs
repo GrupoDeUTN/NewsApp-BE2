@@ -5,6 +5,9 @@ using NewsApp.Themes;
 using NewsApp.User;
 using NewsApp.Alert;
 using Volo.Abp.Identity;
+using NewsApp.Notification;
+using NewsApp.AccesoAPI;
+using NewsApp.AccesoApi;
 
 namespace NewsApp;
 
@@ -20,5 +23,7 @@ public class NewsAppApplicationAutoMapperProfile : Profile
         CreateMap<NewsDto, ArticleDto>().ReverseMap();
         CreateMap<NewsEntidad, NewsDto>().ReverseMap();
         CreateMap<AlertEntidad, AlertDto>();
+        CreateMap<NotificationEntidad, NotificationDto>();
+        CreateMap<AccesoApiEntidad,AccesoApiDto>();
     }
 }

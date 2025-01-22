@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NewsApp.AccesoAPI;
 using NewsApp.Alert;
 using NewsApp.News;
+using NewsApp.Notification;
 using NewsApp.Themes;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -64,6 +66,10 @@ public class NewsAppDbContext :
 
     public DbSet<AlertEntidad> AlertEntidad { get; set; } 
 
+    public DbSet<NotificationEntidad> NotificationEntidad { get; set; }
+
+    public DbSet<AccesoApiEntidad> AccesoApiEntidad { get; set; }
+
 #endregion
 
 public NewsAppDbContext(DbContextOptions<NewsAppDbContext> options)
@@ -106,15 +112,32 @@ public NewsAppDbContext(DbContextOptions<NewsAppDbContext> options)
 
         });
 
-        //Entidad Alert 
 
+        //Entidad alerta 
         builder.Entity<AlertEntidad>(b =>
         {
-            b.ToTable(NewsAppConsts.DbTablePrefix + "Alerts", NewsAppConsts.DbSchema); // Nombre de la tabla con prefijo y esquema
-            b.ConfigureByConvention(); // Configuración estándar de ABP Framework
+            b.ToTable(NewsAppConsts.DbTablePrefix + "Alerts", NewsAppConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.HasMany(a => a.Notificaciones) // Relación uno a muchos
+                .WithOne(n => n.Alert)
+                .HasForeignKey(n => n.AlertId)
+                .OnDelete(DeleteBehavior.Cascade); // Elimina las notificaciones si se elimina la alerta
         });
 
+        //Entidad notificacion 
+        builder.Entity<NotificationEntidad>(b =>
+        {
+            b.ToTable(NewsAppConsts.DbTablePrefix + "Notifications", NewsAppConsts.DbSchema);
+            b.ConfigureByConvention();
+        });
 
+        //Entidad AccesoApi 
+        builder.Entity<AccesoApiEntidad>(b =>
+        {
+            b.ToTable(NewsAppConsts.DbTablePrefix + "AccesoApi", NewsAppConsts.DbSchema);
+            b.ConfigureByConvention();
+        });
 
 
     }
