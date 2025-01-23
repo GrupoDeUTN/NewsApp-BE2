@@ -28,7 +28,7 @@ namespace NewsApp.Themes
 
             if (id is not null)
             {
-                // Si el id no es nulo significa que se modifica el tema
+                // Si el id no es nulo significa que se modifica el tema, además si el tema a modificar es un tema hijo va el ID y en parentID es null
                 theme = await _repository.GetAsync(id.Value, includeDetails: true);
 
                 theme.Name = name;

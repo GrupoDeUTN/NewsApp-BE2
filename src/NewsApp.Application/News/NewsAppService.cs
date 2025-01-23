@@ -63,9 +63,9 @@ namespace NewsApp.News
         }
    
 
-    public NewsDto SeleccionarNewsDeBusqueda(ICollection<NewsDto> resultados, string author)
+    public NewsDto SeleccionarNewsDeBusqueda(ICollection<NewsDto> resultados, string titulo)
         {
-            var newBusqueda = resultados.FirstOrDefault(x => x.Author == author);
+            var newBusqueda = resultados.FirstOrDefault(x => x.Title == titulo);
             return newBusqueda;
         }
 

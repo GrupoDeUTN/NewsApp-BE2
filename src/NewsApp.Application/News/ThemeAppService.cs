@@ -83,6 +83,8 @@ namespace NewsApp.Themes
             return ObjectMapper.Map<Theme, ThemeDto>(theme);
         }
 
+        
+
 
 
         public async Task DeleteAsync(int id)
@@ -146,7 +148,7 @@ namespace NewsApp.Themes
         }
 
         //probando con autor ---> 3010, Argentina, Steven Levy
-        public async Task<NewsDto> AgregarNoticia(int idTema, string busqueda, string autor)
+        public async Task<NewsDto> AgregarNoticia(int idTema, string busqueda, string titulo)
 
         {
             //Obtener el tema 
@@ -163,7 +165,7 @@ namespace NewsApp.Themes
             //Obtener noticia
             var resultados = await _newsAppService.Search(busqueda);
 
-            var noticia = _newsAppService.SeleccionarNewsDeBusqueda(resultados, autor);
+            var noticia = _newsAppService.SeleccionarNewsDeBusqueda(resultados, titulo);
 
             var noticiaEntidad = ObjectMapper.Map<NewsDto, NewsEntidad>(noticia);
 
