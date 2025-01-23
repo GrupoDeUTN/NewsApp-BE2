@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NewsApp.News
 {
-    public interface INewsService
+    public interface INewsApiService
     {
         Task<ICollection<ArticleDto>> GetNewsAsync(string query);
     }

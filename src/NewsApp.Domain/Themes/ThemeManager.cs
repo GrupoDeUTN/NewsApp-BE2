@@ -12,7 +12,7 @@ using Volo.Abp.Users;
 
 namespace NewsApp.Themes
 {
-    public class ThemeManager : DomainService
+    public class ThemeManager : DomainService, IThemeManager
     {
         private readonly IRepository<Theme, int> _repository;
         private readonly IRepository<NewsEntidad, int> _repositoryNew;
@@ -28,7 +28,7 @@ namespace NewsApp.Themes
 
             if (id is not null)
             {
-                // Si el id no es nulo significa que se modifica el tema
+                // Si el id no es nulo significa que se modifica el tema, además si el tema a modificar es un tema hijo va el ID y en parentID es null
                 theme = await _repository.GetAsync(id.Value, includeDetails: true);
 
                 theme.Name = name;
@@ -69,6 +69,47 @@ namespace NewsApp.Themes
 
           
             
+        }
+
+
+        public async Task DeleteThemeRecursively(Theme theme)
+        {
+            // Primero, eliminar todas las noticias asociadas al tema actual
+            if (theme.listNews != null && theme.listNews.Any())
+            {
+                await DeleteNewsFromTheme(theme);
+            }
+
+            // Luego, proceder con la eliminación recursiva de los temas hijos
+            if (theme.Themes != null && theme.Themes.Any())
+            {
+                foreach (var childTheme in theme.Themes.ToList())
+                {
+                    await DeleteThemeRecursively(childTheme);
+                }
+            }
+
+            // Finalmente, eliminar el tema
+            await _repository.DeleteAsync(theme, autoSave: true);
+        }
+
+
+        public async Task DeleteNewsFromTheme(Theme theme)
+        {
+
+            if (theme.listNews != null && theme.listNews.Any())
+            {
+                foreach (var news in theme.listNews.ToList())
+                {
+                    // Aquí podrías manejar la eliminación de la noticia según sea necesario
+                    // por ejemplo, eliminar de un repositorio de noticias si existe o simplemente eliminarla de la lista.
+                    theme.listNews.Remove(news);
+
+                }
+            }
+
+            // Actualizar el tema en el repositorio para reflejar los cambios
+            await _repository.UpdateAsync(theme, autoSave: true);
         }
     }
 

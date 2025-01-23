@@ -31,7 +31,7 @@ public class NewsAppApplicationModule : AbpModule
         });
 
         //se registra el servicio de noticias. Deberia registrarse solo, pero como me dio error lo incorporo aca:
-        context.Services.AddTransient<INewsService, NewsApiService>();
+        context.Services.AddTransient<INewsApiService, NewsApiService>();
         context.Services.AddHostedService<NewsBackgroundAppService>();
 
     }

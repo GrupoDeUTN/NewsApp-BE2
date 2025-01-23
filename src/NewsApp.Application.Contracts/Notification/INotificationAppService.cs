@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Application.Services;
 
 namespace NewsApp.Notification
 {
-    public interface INotificationAppService
+    public interface INotificationAppService : IApplicationService
     {
 
       
@@ -13,7 +14,7 @@ namespace NewsApp.Notification
 
             Task<NotificationDto> GetNotificationAsync(int id);
 
-            Task<NotificationDto> CreateAsync(NotificationDto input);
+            
         
 
     }

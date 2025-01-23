@@ -60,35 +60,7 @@ namespace NewsApp
             return ObjectMapper.Map<NotificationEntidad, NotificationDto>(notification);
         }
 
-        // Crear una nueva notificación
-        public async Task<NotificationDto> CreateAsync(NotificationDto input)
-        {
-            var userGuid = CurrentUser.Id.GetValueOrDefault();
-            var identityUser = await _userManager.FindByIdAsync(userGuid.ToString());
 
-            // Verificar si la alerta asociada existe y pertenece al usuario actual
-            var alert = await _alertRepository.FirstOrDefaultAsync(
-                a => a.Id == input.AlertId && a.UserId == identityUser.Id);
-
-            if (alert == null)
-            {
-                throw new Exception("La alerta asociada no existe o no pertenece al usuario actual.");
-            }
-
-            var notification = new NotificationEntidad
-            {
-                FechaEnvio = DateTime.UtcNow,
-                Leida = input.Leida,
-                CadenaBusqueda = input.CadenaBusqueda,
-                CantidadNoticiasNuevas = input.CantidadNoticiasNuevas,
-                AlertId = input.AlertId,
-                Alert = alert
-            };
-
-            var createdNotification = await _repository.InsertAsync(notification, autoSave: true);
-
-            return ObjectMapper.Map<NotificationEntidad, NotificationDto>(createdNotification);
-        }
 
         // Eliminar una notificación
         public async Task DeleteAsync(int id)

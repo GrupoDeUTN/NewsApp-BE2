@@ -55,34 +55,52 @@ namespace NewsApp
         }
 
         // Crear una nueva alerta
-        public async Task<AlertDto> CreateAsync(AlertDto input)
+        //public async Task<AlertDto> CreateAsync(AlertDto input)
+        //{
+        //    var userGuid = CurrentUser.Id.GetValueOrDefault();
+        //    var identityUser = await _userManager.FindByIdAsync(userGuid.ToString());
+
+        //    // Truncar la fecha para conservar solo día, mes y año
+        //    var fechaCreacion = DateTime.UtcNow.AddDays(-7); // Fecha una semana atrás (PARA PROBAR DESP BORRAR)
+
+        //    // Verificar si el ID ya existe en la base de datos
+        //    var existingAlert = await _repository.FirstOrDefaultAsync(x => x.Id == input.Id);
+        //    if (existingAlert != null)
+        //    {
+        //        throw new Exception($"Una alerta con el ID {input.Id} ya existe.");
+        //    }
+
+        //    var alert = new AlertEntidad
+        //    {
+        //        FechaCreacion = fechaCreacion,
+        //        Activa = input.Activa,
+        //        CadenaBusqueda = input.CadenaBusqueda,
+        //        UserId = identityUser.Id
+        //    };
+
+        //    var createdAlert = await _repository.InsertAsync(alert, autoSave: true);
+
+        //    return ObjectMapper.Map<AlertEntidad, AlertDto>(createdAlert);
+        //}
+
+
+        public async Task<AlertDto> CreateAsync(CreateAlertDto input) // Cambiar el parámetro a CreateAlertDto
         {
             var userGuid = CurrentUser.Id.GetValueOrDefault();
             var identityUser = await _userManager.FindByIdAsync(userGuid.ToString());
 
-            // Truncar la fecha para conservar solo día, mes y año
-            var fechaCreacion = DateTime.UtcNow.AddDays(-7); // Fecha una semana atrás (PARA PROBAR DESP BORRAR)
-
-            // Verificar si el ID ya existe en la base de datos
-            var existingAlert = await _repository.FirstOrDefaultAsync(x => x.Id == input.Id);
-            if (existingAlert != null)
-            {
-                throw new Exception($"Una alerta con el ID {input.Id} ya existe.");
-            }
-
+            // Eliminar la validación del ID existente (ya no está en el input)
             var alert = new AlertEntidad
             {
-                FechaCreacion = fechaCreacion,
+                FechaCreacion = input.FechaCreacion,
                 Activa = input.Activa,
                 CadenaBusqueda = input.CadenaBusqueda,
                 UserId = identityUser.Id
             };
 
             var createdAlert = await _repository.InsertAsync(alert, autoSave: true);
-
             return ObjectMapper.Map<AlertEntidad, AlertDto>(createdAlert);
         }
-
 
         // Eliminar una alerta
         public async Task DeleteAsync(int id)

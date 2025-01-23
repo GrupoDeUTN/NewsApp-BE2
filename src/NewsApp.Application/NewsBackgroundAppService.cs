@@ -15,21 +15,25 @@ namespace NewsApp
 {
     public class NewsBackgroundAppService : BackgroundService
     {
-        private readonly INewsService _newsService;
+        private readonly INewsApiService _newsService;
         private readonly IRepository<AlertEntidad, int> _alertRepository;
         private readonly IRepository<NotificationEntidad, int> _notificationRepository;
         private readonly ILogger<NewsBackgroundAppService> _logger;
+        private readonly INotificationManager _notificationManager;
 
         public NewsBackgroundAppService(
-            INewsService newsService,
+            INewsApiService newsService,
+            INotificationManager notificationManager,
             IRepository<AlertEntidad, int> alertRepository,
             IRepository<NotificationEntidad, int> notificationRepository,
             ILogger<NewsBackgroundAppService> logger)
+
         {
             _newsService = newsService;
             _alertRepository = alertRepository;
             _notificationRepository = notificationRepository;
             _logger = logger;
+            _notificationManager = notificationManager;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -61,7 +65,7 @@ namespace NewsApp
 
                             if (nuevasNoticias.Any())
                             {
-                                await CrearNotificacion(alerta, nuevasNoticias);
+                                await _notificationManager.CrearNotificacion(alerta, nuevasNoticias);
                             }
                         }
                         else
@@ -73,12 +77,12 @@ namespace NewsApp
 
                             if (noticiasNuevas.Any())
                             {
-                                await CrearNotificacion(alerta, noticiasNuevas);
+                                await _notificationManager.CrearNotificacion(alerta, noticiasNuevas);
                             }
                         }
                     }
 
-                    await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
+                    await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
                 }
                 catch (Exception ex)
                 {
@@ -86,21 +90,6 @@ namespace NewsApp
                     await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
                 }
             }
-        }
-
-        private async Task CrearNotificacion(AlertEntidad alerta, ICollection<ArticleDto> noticias)
-        {
-            var notificacion = new NotificationEntidad
-            {
-                FechaEnvio = DateTime.UtcNow,
-                Leida = false,
-                CadenaBusqueda = alerta.CadenaBusqueda,
-                CantidadNoticiasNuevas = noticias.Count,
-                AlertId = alerta.Id,
-                
-            };
-
-            await _notificationRepository.InsertAsync(notificacion);
         }
 
 

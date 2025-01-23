@@ -83,6 +83,8 @@ namespace NewsApp.Themes
             return ObjectMapper.Map<Theme, ThemeDto>(theme);
         }
 
+        
+
 
 
         public async Task DeleteAsync(int id)
@@ -100,53 +102,16 @@ namespace NewsApp.Themes
             }
 
             // Llamada recursiva para eliminar el tema y todo su contenido
-            await DeleteThemeRecursively(theme);
+            await _themeManager.DeleteThemeRecursively(theme);   ///--------> ACA
         }
 
 
 
 
-        private async Task DeleteThemeRecursively(Theme theme)
-        {
-            // Primero, eliminar todas las noticias asociadas al tema actual
-            if (theme.listNews != null && theme.listNews.Any())
-            {
-                await DeleteNewsFromTheme(theme);
-            }
 
-            // Luego, proceder con la eliminación recursiva de los temas hijos
-            if (theme.Themes != null && theme.Themes.Any())
-            {
-                foreach (var childTheme in theme.Themes.ToList())
-                {
-                    await DeleteThemeRecursively(childTheme);
-                }
-            }
-
-            // Finalmente, eliminar el tema
-            await _repository.DeleteAsync(theme, autoSave: true);
-        }
-
-        private async Task DeleteNewsFromTheme(Theme theme)
-        {
-
-            if (theme.listNews != null && theme.listNews.Any())
-            {
-                foreach (var news in theme.listNews.ToList())
-                {
-                    // Aquí podrías manejar la eliminación de la noticia según sea necesario
-                    // por ejemplo, eliminar de un repositorio de noticias si existe o simplemente eliminarla de la lista.
-                    theme.listNews.Remove(news);
-
-                }
-            }
-
-            // Actualizar el tema en el repositorio para reflejar los cambios
-            await _repository.UpdateAsync(theme, autoSave: true);
-        }
 
         //probando con autor ---> 3010, Argentina, Steven Levy
-        public async Task<NewsDto> AgregarNoticia(int idTema, string busqueda, string autor)
+        public async Task<NewsDto> AgregarNoticia(int idTema, string busqueda, string titulo)
 
         {
             //Obtener el tema 
@@ -163,7 +128,7 @@ namespace NewsApp.Themes
             //Obtener noticia
             var resultados = await _newsAppService.Search(busqueda);
 
-            var noticia = _newsAppService.SeleccionarNewsDeBusqueda(resultados, autor);
+            var noticia = _newsAppService.SeleccionarNewsDeBusqueda(resultados, titulo);
 
             var noticiaEntidad = ObjectMapper.Map<NewsDto, NewsEntidad>(noticia);
 

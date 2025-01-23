@@ -7,8 +7,7 @@ using Volo.Abp.Application.Services;
 
 namespace NewsApp.Alert
 {
-    public interface IAlertAppService
-    {
+    
 
         public interface IAlertAppService : IApplicationService
         {
@@ -16,9 +15,14 @@ namespace NewsApp.Alert
 
             Task<AlertDto> GetAlertAsync(int id);
 
-            Task<AlertDto> CreateAsync(AlertDto input);
+
+            Task<AlertDto> CreateAsync(CreateAlertDto input);
+
+            Task DeleteAsync(int id);
+
+
         }
 
 
-    }
+    
 }
