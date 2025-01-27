@@ -8,7 +8,7 @@ using Xunit;
 
 namespace NewsApp.News
 {
-    public class NewsApiService_Test
+    public class NewsApiService_Test : NewsAppDomainTestBase
     {
         private readonly NewsApiService _newsApiService;
 

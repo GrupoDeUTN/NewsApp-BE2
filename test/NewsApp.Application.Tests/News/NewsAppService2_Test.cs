@@ -55,10 +55,11 @@ namespace NewsApp.News
         {
             // Arrange
             var resultados = new List<NewsDto>
-    {
-        new NewsDto { Title = "Apple releases new iPhone", Description = "New iPhone is out!" },
-        new NewsDto { Title = "Apple stock rises", Description = "Apple stock hits all-time high." }
-    };
+            {
+                new NewsDto { Title = "Apple releases new iPhone", Description = "New iPhone is out!" },
+                new NewsDto { Title = "Apple stock rises", Description = "Apple stock hits all-time high." }
+            };
+
             var titulo = "Non-existent title";
 
             // Act & Assert

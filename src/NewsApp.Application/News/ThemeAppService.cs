@@ -110,7 +110,6 @@ namespace NewsApp.Themes
 
 
 
-        //probando con autor ---> 3010, Argentina, Steven Levy
         public async Task<NewsDto> AgregarNoticia(int idTema, string busqueda, string titulo)
 
         {
