@@ -20,19 +20,21 @@ namespace NewsApp.Themes
     public class ThemeAppService : NewsAppAppService, IThemeAppService
     {
         private readonly IRepository<Theme, int> _repository;
+        private readonly IRepository<NewsEntidad, int> _repositoryNews;
         private readonly UserManager<Volo.Abp.Identity.IdentityUser> _userManager;
         private readonly ThemeManager _themeManager;
         private readonly INewsAppService _newsAppService;
         private readonly NewsManager _newsManager;
 
         public ThemeAppService(IRepository<Theme, int> repository, UserManager<Volo.Abp.Identity.IdentityUser> userManager, ThemeManager themeManager,
-            INewsAppService newsAppService, NewsManager newsManager)
+            INewsAppService newsAppService, NewsManager newsManager, IRepository<NewsEntidad, int> repositoryNews)
         {
             _repository = repository;
             _userManager = userManager;
             _themeManager = themeManager;
             _newsAppService = newsAppService;
             _newsManager = newsManager;
+            _repositoryNews = repositoryNews;   
         }
 
         public async Task<ICollection<ThemeDto>> GetThemesAsync()
@@ -135,16 +137,13 @@ namespace NewsApp.Themes
 
             noticiaEntidad.ThemeId = idTema;
 
-           var IdNoticia = await _newsManager.CreateAsyncNews(noticiaEntidad);
+            var IdNoticia = await _newsManager.CreateAsyncNews(noticiaEntidad);
 
-          // await  _themeManager.AddNewAsync(IdNoticia, theme);
+            await _repository.UpdateAsync(theme, autoSave: true);
 
-           await _repository.UpdateAsync(theme, autoSave: true);
+            noticia.Id = IdNoticia;
 
-           noticia.Id = IdNoticia;
-
-           return noticia;
-
+            return noticia;
 
         }
 

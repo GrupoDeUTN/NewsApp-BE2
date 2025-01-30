@@ -10,7 +10,7 @@ namespace NewsApp.Themes
   
         Task<Theme> CreateAsyncOrUpdate(int? id, string name, int? parentId, Volo.Abp.Identity.IdentityUser identityUser);
 
-        Task AddNewAsync(int idNoticia, Theme theme);
+        //Task AddNewAsync(int idNoticia, Theme theme);
 
         Task DeleteThemeRecursively(Theme theme);
 

@@ -49,29 +49,30 @@ namespace NewsApp.Themes
             return theme;
         }
 
-        public async Task AddNewAsync(int idNoticia, Theme theme)
-        {
-            if (theme == null)
-            {
-                throw new ArgumentNullException(nameof(theme), "El tema no puede ser nulo.");
-            }
 
-            // Obtener la noticia desde el repositorio usando el id
-            var newsEntidad = await _repositoryNew.GetAsync(idNoticia, includeDetails: true);
+        //public async Task AddNewAsync(int idNoticia, Theme theme)
+        //{
+        //    if (theme == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(theme), "El tema no puede ser nulo.");
+        //    }
 
-            if (newsEntidad == null)
-            {
-                throw new ArgumentException("La noticia especificada no existe.", nameof(idNoticia));
-            }
+        //    // Obtener la noticia desde el repositorio usando el id
+        //    var newsEntidad = await _repositoryNew.GetAsync(idNoticia, includeDetails: true);
 
-            // Agregar la noticia al tema
-            theme.listNews.Add(newsEntidad);
+        //    if (newsEntidad == null)
+        //    {
+        //        throw new ArgumentException("La noticia especificada no existe.", nameof(idNoticia));
+        //    }
 
-          
-            
-        }
+        //    // Agregar la noticia al tema
+        //    theme.listNews.Add(newsEntidad);
+       
+        // }
 
 
+
+        //Elimina todo las noticias y capertas de un tema, luego se elimna el mismo
         public async Task DeleteThemeRecursively(Theme theme)
         {
             // Primero, eliminar todas las noticias asociadas al tema actual
@@ -94,6 +95,7 @@ namespace NewsApp.Themes
         }
 
 
+        //Se encarga de eliminar todos las noticias de un tema
         public async Task DeleteNewsFromTheme(Theme theme)
         {
 
@@ -101,8 +103,7 @@ namespace NewsApp.Themes
             {
                 foreach (var news in theme.listNews.ToList())
                 {
-                    // Aquí podrías manejar la eliminación de la noticia según sea necesario
-                    // por ejemplo, eliminar de un repositorio de noticias si existe o simplemente eliminarla de la lista.
+
                     theme.listNews.Remove(news);
 
                 }

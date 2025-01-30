@@ -13,15 +13,17 @@ namespace NewsApp.News
         private readonly INewsApiService _newsService;
         private readonly IAccesoApiLogger _accesoApiLogger;
         private readonly ICurrentUser _currentUser;
-
+        private readonly NewsManager _newsManager;
         public NewsAppService(
             INewsApiService newsService,
             IAccesoApiLogger accesoApiLogger,
-            ICurrentUser currentUser)
+            ICurrentUser currentUser,
+            NewsManager newsManager)
         {
             _newsService = newsService;
             _accesoApiLogger = accesoApiLogger;
             _currentUser = currentUser;
+            _newsManager = newsManager;
         }
 
         public async Task<ICollection<NewsDto>> Search(string query)
@@ -54,5 +56,8 @@ namespace NewsApp.News
 
             return noticia;
         }
+
+
+
     }
 }
