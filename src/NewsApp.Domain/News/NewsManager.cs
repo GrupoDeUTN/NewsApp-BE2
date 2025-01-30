@@ -21,7 +21,7 @@ namespace NewsApp.News
         public async Task<int> CreateAsyncNews(NewsEntidad newsEntidad)
         {
             // Inserta la entidad y guarda cambios en la base de datos
-            await _repository.InsertAsync(newsEntidad, autoSave: true); // Asegúrate de que autoSave esté en true
+            await _repository.InsertAsync(newsEntidad, autoSave: true); 
 
 
 

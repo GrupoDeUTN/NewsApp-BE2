@@ -44,7 +44,7 @@ public class NewsAppTestDataSeedContributor : IDataSeedContributor, ITransientDe
         //var new2 = await _newRepository.InsertAsync(new NewsEntidad { Title = "Segunda noticia", ThemeId = 2 });
 
         //Añadir noticias a algún tema
-        theme2.listNews.Add(new1);
+        theme2.listNews.Add(new1); //esto creo que no anda
 
         
          

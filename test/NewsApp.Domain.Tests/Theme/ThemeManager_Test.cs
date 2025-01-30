@@ -121,20 +121,20 @@ namespace NewsApp.Theme
             // Arrange
 
             //Datos comunes entre carpetas
-            var user = new IdentityUser(Guid.NewGuid(), "testuser", "test@test.com");
+            var user =  await _userManager.FindByIdAsync("2e701e62-0953-4dd3-910b-dc6cc93ccb0d");
             var idNoticia = 1;
+            var idTemaPadre = 1;
 
             //Crear carpeta padre y añadir noticia
-            var createTheme = await _themeManager.CreateAsyncOrUpdate(null, "TEMA PADRE", null, user);
-            var theme = await _themeRepository.InsertAsync(createTheme, autoSave: true);
+            var theme = await _themeRepository.GetAsync(idTemaPadre, includeDetails: true);
+            theme.User = user;
             var noticia = await _newsRepository.GetAsync(idNoticia, includeDetails: true);
             theme.listNews.Add(noticia);
 
 
             //Esta parte añade un tema hijo y le añade una notica    
-            var themeId = theme.Id;
-            var childTheme = await _themeManager.CreateAsyncOrUpdate(null, "TEMA HIJO", themeId, user);
-            childTheme.ThemeId = themeId;   
+            var childTheme = await _themeManager.CreateAsyncOrUpdate(null, "TEMA HIJO", idTemaPadre, user);
+            childTheme.ThemeId = idTemaPadre;   
             var childTheme_update = await _themeRepository.InsertAsync(childTheme, autoSave: true);
             childTheme_update.listNews.Add(noticia);
             theme.Themes.Add(childTheme_update);
@@ -145,7 +145,7 @@ namespace NewsApp.Theme
             using (var uow = _unitOfWorkManager.Begin())
             {
                 var dbContext = await _dbContextProvider.GetDbContextAsync();
-                var deletedTheme = dbContext.Themes.FirstOrDefault(t => t.Id == theme.Id);
+                var deletedTheme = dbContext.Themes.FirstOrDefault(t => t.Id == idTemaPadre);
                 deletedTheme.ShouldBeNull();
             }
             
