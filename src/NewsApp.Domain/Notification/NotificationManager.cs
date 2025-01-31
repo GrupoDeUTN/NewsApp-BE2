@@ -1,5 +1,6 @@
 ﻿using NewsApp.Alert;
 using NewsApp.News;
+using Polly;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace NewsApp.Notification
             _notificationRepository = notificationRepository;
         }
 
-        public async Task CrearNotificacion(AlertEntidad alerta, ICollection<ArticleDto> noticias)
+        public async Task<NotificationEntidad> CrearNotificacion(AlertEntidad alerta, ICollection<ArticleDto> noticias)
         {
             var notificacion = new NotificationEntidad
             {
@@ -28,8 +29,12 @@ namespace NewsApp.Notification
                 AlertId = alerta.Id,
             };
 
-            await _notificationRepository.InsertAsync(notificacion);
+            await _notificationRepository.InsertAsync(notificacion, autoSave: true);
+
+            return notificacion;
         }
     }
 
-}
+    // ALERTA { NOTIF1, NOTIF2} ... .
+   
+}  

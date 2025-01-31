@@ -27,6 +27,7 @@ namespace NewsApp.Theme
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IRepository<Themes.Theme, int> _themeRepository;
         private readonly IRepository<NewsEntidad, int> _newsRepository;
+        private readonly UserManager<Volo.Abp.Identity.IdentityUser> _userManager;
 
         public ThemeAppService_Test()
         {
@@ -35,6 +36,7 @@ namespace NewsApp.Theme
             _unitOfWorkManager = GetRequiredService<IUnitOfWorkManager>();
             _themeRepository = GetRequiredService<IRepository<Themes.Theme, int>>();
             _newsRepository = GetRequiredService<IRepository<NewsEntidad, int>>();
+            _userManager = GetRequiredService<UserManager<Volo.Abp.Identity.IdentityUser>>();
         }
 
 
@@ -187,20 +189,26 @@ namespace NewsApp.Theme
         [Fact]
         public async Task Should_Delete_New_From_Theme()
         {
-            //Arrage
-            var themeId = 1;
-            var busqueda = "FMI";
-            var tituloEsperado = "Wrapped: My Ten Most-Read Forbes Pieces For 2024";
-            var noticia = await _themeAppService.AgregarNoticia(themeId, busqueda, tituloEsperado);
-            var idNoticias = noticia.Id;
 
-            // Act
-            await _themeAppService.DeleteNewFromTheme(themeId, idNoticias);
-
-
-            // Assert
+            
             using (var uow = _unitOfWorkManager.Begin())
             {
+
+
+                // Arrange
+                //Datos persistidos en los datos de prueba
+                var idNoticia = 1;
+                var idTema = 2;
+                var user = await _userManager.FindByIdAsync("2e701e62-0953-4dd3-910b-dc6cc93ccb0d");
+                var theme = await _themeRepository.GetAsync(idTema, includeDetails: true);
+                var noticia = await _newsRepository.GetAsync(idNoticia, includeDetails: true);
+
+
+                // Act
+                await _themeAppService.DeleteNewFromTheme(idNoticia, idTema);
+
+
+                // Assert
                 var dbContext = await _dbContextProvider.GetDbContextAsync();
                 var newInDb = dbContext.NewsEntidad.FirstOrDefault(n => n.Id == noticia.Id);
                 newInDb.ShouldBeNull();
