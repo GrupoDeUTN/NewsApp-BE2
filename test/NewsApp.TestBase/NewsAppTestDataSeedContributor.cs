@@ -9,6 +9,8 @@ using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
 using Volo.Abp.Uow;
+using NewsApp.AccesoAPI;
+using System.Collections.Generic;
 
 namespace NewsApp;
 
@@ -21,10 +23,10 @@ public class NewsAppTestDataSeedContributor : IDataSeedContributor, ITransientDe
 
     private readonly IdentityUserManager _identityUserManager;
     private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+    private readonly IRepository<AccesoApiEntidad, int> _accesoApiEntidadRepository;
     public NewsAppTestDataSeedContributor(IRepository<Theme, int> themeRepository, IdentityUserManager identityUserManager,
         IRepository<NewsEntidad, int> newRepository, IRepository<AlertEntidad, int> alertRepository,
-        IRepository<NotificationEntidad, int> notificationRepository, IUnitOfWorkManager unitOfWorkManager)
+        IRepository<NotificationEntidad, int> notificationRepository, IUnitOfWorkManager unitOfWorkManager, IRepository<AccesoApiEntidad, int> accesoApiEntidadRepository)
     {
         _themeRepository = themeRepository;
         _identityUserManager = identityUserManager;
@@ -32,6 +34,7 @@ public class NewsAppTestDataSeedContributor : IDataSeedContributor, ITransientDe
         _alertRepository = alertRepository;
         _notificationRepository = notificationRepository;
         _unitOfWorkManager = unitOfWorkManager;
+        _accesoApiEntidadRepository = accesoApiEntidadRepository;
     }
 
     public async Task SeedAsync(DataSeedContext context)
@@ -52,6 +55,74 @@ public class NewsAppTestDataSeedContributor : IDataSeedContributor, ITransientDe
 
         // Añadir la noticia al tema
         theme2.listNews.Add(new1);
-    }
 
+
+
+        // ALERTAS 
+
+        await _alertRepository.InsertAsync(new AlertEntidad()
+        {
+            Activa = true,
+            CadenaBusqueda = "FMI",
+            UserId = identityUser1.Id,
+            Notificaciones = new List<NotificationEntidad>()
+
+    }) ; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // Accesos a la API
+
+        await _accesoApiEntidadRepository.InsertAsync(new AccesoApiEntidad()
+        {
+            UserId = identityUser1.Id,
+            TiempoInicio = new DateTime(2025, 1, 27, 10, 30, 0),
+            TiempoFin = new DateTime(2025, 1, 27, 10, 33, 0),
+            TiempoTotal = TimeSpan.FromMinutes(3),
+            ErrorMessage = "This shouldn't happen, and if it does then it's our fault, not yours. Try the request again shortly."
+        });
+
+        await _accesoApiEntidadRepository.InsertAsync(new AccesoApiEntidad()
+        {
+            UserId = identityUser1.Id,
+            TiempoInicio = new DateTime(2025, 1, 29, 10, 30, 0),
+            TiempoFin = new DateTime(2025, 1, 29, 10, 33, 0),
+            TiempoTotal = TimeSpan.FromMinutes(3),
+            ErrorMessage = "You have requested a source which does not exist."
+        });
+
+        await _accesoApiEntidadRepository.InsertAsync(new AccesoApiEntidad()
+        {
+            UserId = identityUser1.Id,
+            TiempoInicio = new DateTime(2025, 1, 30, 10, 30, 0),
+            TiempoFin = new DateTime(2025, 1, 30, 10, 33, 0),
+            TiempoTotal = TimeSpan.FromMinutes(5),
+            ErrorMessage = null
+        });
+
+        await _accesoApiEntidadRepository.InsertAsync(new AccesoApiEntidad()
+        {
+            UserId = identityUser1.Id,
+            TiempoInicio = new DateTime(2025, 1, 28, 9, 15, 0),
+            TiempoFin = new DateTime(2025, 1, 28, 9, 20, 0),
+            TiempoTotal = TimeSpan.FromMinutes(5),
+            ErrorMessage = null
+        });
+
+
+    }
 }
+
+

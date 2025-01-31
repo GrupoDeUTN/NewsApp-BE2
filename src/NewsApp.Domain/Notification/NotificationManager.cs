@@ -1,5 +1,6 @@
 ﻿using NewsApp.Alert;
 using NewsApp.News;
+using Polly;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -32,4 +33,6 @@ namespace NewsApp.Notification
         }
     }
 
-}
+    // ALERTA { NOTIF1, NOTIF2} ... .
+   
+}  
