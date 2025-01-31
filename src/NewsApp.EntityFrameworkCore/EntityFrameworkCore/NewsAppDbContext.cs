@@ -95,6 +95,8 @@ public NewsAppDbContext(DbContextOptions<NewsAppDbContext> options)
 
 
 
+
+
         // Entidad News
         builder.Entity<NewsEntidad>(b => {
             b.ToTable(NewsAppConsts.DbTablePrefix + "News", NewsAppConsts.DbSchema);
@@ -110,6 +112,17 @@ public NewsAppDbContext(DbContextOptions<NewsAppDbContext> options)
             b.ConfigureByConvention();
             b.Property(x => x.Name).IsRequired().HasMaxLength(128);
 
+            // Relación de Theme con NewsEntidad
+            b.HasMany(t => t.listNews)
+             .WithOne()
+             .HasForeignKey(n => n.ThemeId)
+             .OnDelete(DeleteBehavior.Cascade);
+
+            // Relación padre-hijo en Theme
+            b.HasMany(t => t.Themes)
+             .WithOne()
+             .HasForeignKey(t => t.ThemeId)
+             .OnDelete(DeleteBehavior.Cascade);
         });
 
 

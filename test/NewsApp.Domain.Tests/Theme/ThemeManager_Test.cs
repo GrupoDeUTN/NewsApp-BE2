@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using Volo.Abp.Users;
 using IdentityUser = Volo.Abp.Identity.IdentityUser;
 using static Volo.Abp.Identity.Settings.IdentitySettingNames;
+using Microsoft.EntityFrameworkCore;
 
 namespace NewsApp.Theme
 {
@@ -117,33 +118,26 @@ namespace NewsApp.Theme
         [Fact]
         public async Task Should_Delete_Theme_Recursivelye()
         {
-
-            // Arrange
-
-            //Datos comunes entre carpetas
-            var user =  await _userManager.FindByIdAsync("2e701e62-0953-4dd3-910b-dc6cc93ccb0d");
-            var idNoticia = 1;
-            var idTemaPadre = 1;
-
-            //Crear carpeta padre y añadir noticia
-            var theme = await _themeRepository.GetAsync(idTemaPadre, includeDetails: true);
-            theme.User = user;
-            var noticia = await _newsRepository.GetAsync(idNoticia, includeDetails: true);
-            theme.listNews.Add(noticia);
-
-
-            //Esta parte añade un tema hijo y le añade una notica    
-            var childTheme = await _themeManager.CreateAsyncOrUpdate(null, "TEMA HIJO", idTemaPadre, user);
-            childTheme.ThemeId = idTemaPadre;   
-            var childTheme_update = await _themeRepository.InsertAsync(childTheme, autoSave: true);
-            childTheme_update.listNews.Add(noticia);
-            theme.Themes.Add(childTheme_update);
-
-            await _themeManager.DeleteThemeRecursively(theme);
-
-            // Assert
             using (var uow = _unitOfWorkManager.Begin())
             {
+                // Arrange
+                //Datos persistidos en los datos de prueba
+                var idNoticia = 1;
+                var idTemaPadre = 2;
+                var user =  await _userManager.FindByIdAsync("2e701e62-0953-4dd3-910b-dc6cc93ccb0d");
+                var theme = await _themeRepository.GetAsync(idTemaPadre, includeDetails: true);
+                var noticia = await _newsRepository.GetAsync(idNoticia, includeDetails: true);
+
+                //Esta parte añade una noticia al tema, y lo añade al tema padre 
+                var temaHijo = await _themeManager.CreateAsyncOrUpdate(null, "Tema Hijo", idTemaPadre, user);
+                temaHijo = await _themeRepository.InsertAsync(temaHijo, autoSave: true);
+                var new2 = await _newsRepository.InsertAsync(new NewsEntidad { Title = "Dos noticia", ThemeId = temaHijo.Id });
+                await uow.SaveChangesAsync();
+
+                // Act: Ejecuto la función
+                await _themeManager.DeleteThemeRecursively(theme);
+
+               // Assert: comprueba que el tema no existe
                 var dbContext = await _dbContextProvider.GetDbContextAsync();
                 var deletedTheme = dbContext.Themes.FirstOrDefault(t => t.Id == idTemaPadre);
                 deletedTheme.ShouldBeNull();
@@ -151,18 +145,7 @@ namespace NewsApp.Theme
             
         }
 
-
-
-
-  
-
-
-
-
-
-
-
-
+       
 
     }
 }

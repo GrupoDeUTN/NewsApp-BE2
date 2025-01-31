@@ -24,6 +24,6 @@ namespace NewsApp.News
 
         public string? Content { get; set; }
 
-        public int ThemeId { get; set; }
+        public int ThemeId { get; set; } //Tema al que pertenece la noticia
     }
 }

@@ -9,7 +9,7 @@ using Volo.Abp.Domain.Entities;
 
 namespace NewsApp.Notification
 {
-    public class NotificationEntidad : Entity<int> // Cambiado de EntityDto<int> a Entity<int>
+    public class NotificationEntidad : Entity<int> 
     {
         public DateTime? FechaEnvio { get; set; }
 
