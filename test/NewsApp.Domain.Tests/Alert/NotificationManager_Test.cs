@@ -46,41 +46,54 @@ public class NotificationManager_Test : NewsAppDomainTestBase
     {
         using (var uow = _unitOfWorkManager.Begin())
         {
-            // Arrange
-            var articleCollection = new List<ArticleDto>();
+        // Arrange
+        var articleCollection = new List<ArticleDto>();
 
-            var article1 = new ArticleDto
-            {
-                Author = "John Doe",
-                Title = "C# en 2025",
-                Description = "Las novedades de C# en el futuro.",
-                Url = "https://example.com/csharp",
-                UrlToImage = "https://example.com/csharp.jpg",
-                PublishedAt = DateTime.Now,
-                Content = "Contenido del artículo..."
-            };
 
-            var article2 = new ArticleDto
-            {
-                Author = "Jane Smith",
-                Title = "IA en el desarrollo",
-                Description = "Cómo la IA está cambiando el desarrollo de software.",
-                Url = "https://example.com/ia",
-                UrlToImage = "https://example.com/ia.jpg",
-                PublishedAt = DateTime.Now,
-                Content = "Más contenido..."
-            };
+        var article1 = new ArticleDto
+        {
+            
+            Author = "John Doe",
+            Title = "C# en 2025",
+            Description = "Las novedades de C# en el futuro.",
+            Url = "https://example.com/csharp",
+            UrlToImage = "https://example.com/csharp.jpg",
+            PublishedAt = DateTime.Now,
+            Content = "Contenido del artículo..."
+        };
 
-            articleCollection.Add(article1);
-            articleCollection.Add(article2);
+        var article2 = new ArticleDto
+        {
+            
+            Author = "Jane Smith",
+            Title = "IA en el desarrollo",
+            Description = "Cómo la IA está cambiando el desarrollo de software.",
+            Url = "https://example.com/ia",
+            UrlToImage = "https://example.com/ia.jpg",
+            PublishedAt = DateTime.Now,
+            Content = "Más contenido..."
+        };
+
+        articleCollection.Add(article1);
+        articleCollection.Add(article2);
 
             var alert = await _alertRepository.GetAsync(1, includeDetails: true);
             int cantidad = (alert.Notificaciones == null || !alert.Notificaciones.Any()) ? 0 : alert.Notificaciones.Count;
 
-            // Act
-            var notificacionCreada = await _notificationManager.CrearNotificacion(alert, articleCollection);
 
-            // Assert
+        var alert = await _alertRepository.GetAsync(1);
+        alert.Notificaciones = new List<NotificationEntidad>();
+
+        var cantidad = alert.Notificaciones.Count;
+
+        // Act
+            var notificacionCreada = await _notificationManager.CrearNotificacion(alert, articleCollection);
+            
+        // Assert
+
+
+
+            // Assert: comprueba que el tema no existe
             var dbContext = await _dbContextProvider.GetDbContextAsync();
             var notif = dbContext.NotificationEntidad.FirstOrDefault(t => t.Id == notificacionCreada.Id);
 
@@ -88,9 +101,12 @@ public class NotificationManager_Test : NewsAppDomainTestBase
             notif.ShouldNotBeNull();
             notif.CantidadNoticiasNuevas.ShouldBe(2);
             notif.CadenaBusqueda.ShouldBe(alert.CadenaBusqueda);
+
+            var themeInDb = dbContext.Themes.GroupBy(t => t.Id).LastOrDefault();
         }
     }
 
+    
 
 
 
