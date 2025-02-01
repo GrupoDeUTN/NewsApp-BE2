@@ -18,100 +18,86 @@ using Volo.Abp.Identity;
 using Volo.Abp.Uow;
 using Xunit;
 using static Volo.Abp.Identity.Settings.IdentitySettingNames;
-public class NotificationManager_Test : NewsAppDomainTestBase
+
+
+namespace NewsApp.Notification
+
 {
-
-    private readonly IRepository<AlertEntidad, int> _alertRepository;
-    private readonly IRepository<NotificationEntidad, int> _notificationRepository;
-    private readonly INotificationManager _notificationManager;
-
-    private readonly IdentityUserManager _identityUserManager;
-    private readonly IUnitOfWorkManager _unitOfWorkManager;
-    private readonly IDbContextProvider<NewsAppDbContext> _dbContextProvider;
-
-    public NotificationManager_Test()
+    public class NotificationManager_Test : NewsAppDomainTestBase
     {
-        _notificationRepository = GetRequiredService<IRepository<NotificationEntidad, int>>();
-        _notificationManager = GetRequiredService<INotificationManager>();
-        _alertRepository = GetRequiredService<IRepository<AlertEntidad, int>>();
-        _unitOfWorkManager = GetRequiredService<IUnitOfWorkManager>();
-        _dbContextProvider = GetRequiredService<IDbContextProvider<NewsAppDbContext>>();
-        _identityUserManager = GetRequiredService<IdentityUserManager>();
 
-    }
+        private readonly IRepository<AlertEntidad, int> _alertRepository;
+        private readonly IRepository<NotificationEntidad, int> _notificationRepository;
+        private readonly INotificationManager _notificationManager;
 
+        private readonly IdentityUserManager _identityUserManager;
+        private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly IDbContextProvider<NewsAppDbContext> _dbContextProvider;
 
-    [Fact]
-    public async Task Should_Create_New_Notification()
-    {
-        using (var uow = _unitOfWorkManager.Begin())
+        public NotificationManager_Test()
         {
-        // Arrange
-        var articleCollection = new List<ArticleDto>();
+            _notificationRepository = GetRequiredService<IRepository<NotificationEntidad, int>>();
+            _notificationManager = GetRequiredService<INotificationManager>();
+            _alertRepository = GetRequiredService<IRepository<AlertEntidad, int>>();
+            _unitOfWorkManager = GetRequiredService<IUnitOfWorkManager>();
+            _dbContextProvider = GetRequiredService<IDbContextProvider<NewsAppDbContext>>();
+            _identityUserManager = GetRequiredService<IdentityUserManager>();
 
-
-        var article1 = new ArticleDto
-        {
-            
-            Author = "John Doe",
-            Title = "C# en 2025",
-            Description = "Las novedades de C# en el futuro.",
-            Url = "https://example.com/csharp",
-            UrlToImage = "https://example.com/csharp.jpg",
-            PublishedAt = DateTime.Now,
-            Content = "Contenido del artículo..."
-        };
-
-        var article2 = new ArticleDto
-        {
-            
-            Author = "Jane Smith",
-            Title = "IA en el desarrollo",
-            Description = "Cómo la IA está cambiando el desarrollo de software.",
-            Url = "https://example.com/ia",
-            UrlToImage = "https://example.com/ia.jpg",
-            PublishedAt = DateTime.Now,
-            Content = "Más contenido..."
-        };
-
-        articleCollection.Add(article1);
-        articleCollection.Add(article2);
-
-            var alert = await _alertRepository.GetAsync(1, includeDetails: true);
-            int cantidad = (alert.Notificaciones == null || !alert.Notificaciones.Any()) ? 0 : alert.Notificaciones.Count;
-
-
-        var alert = await _alertRepository.GetAsync(1);
-        alert.Notificaciones = new List<NotificationEntidad>();
-
-        var cantidad = alert.Notificaciones.Count;
-
-        // Act
-            var notificacionCreada = await _notificationManager.CrearNotificacion(alert, articleCollection);
-            
-        // Assert
-
-
-
-            // Assert: comprueba que el tema no existe
-            var dbContext = await _dbContextProvider.GetDbContextAsync();
-            var notif = dbContext.NotificationEntidad.FirstOrDefault(t => t.Id == notificacionCreada.Id);
-
-            alert.Notificaciones.Count.ShouldBe(cantidad + 1);
-            notif.ShouldNotBeNull();
-            notif.CantidadNoticiasNuevas.ShouldBe(2);
-            notif.CadenaBusqueda.ShouldBe(alert.CadenaBusqueda);
-
-            var themeInDb = dbContext.Themes.GroupBy(t => t.Id).LastOrDefault();
         }
+
+        [Fact]
+        public async Task Should_Create_New_Notification()
+        {
+            using (var uow = _unitOfWorkManager.Begin())
+            {
+                // Arrange
+                var articleCollection = new List<ArticleDto>();
+
+                var article1 = new ArticleDto
+                {
+                    Author = "John Doe",
+                    Title = "C# en 2025",
+                    Description = "Las novedades de C# en el futuro.",
+                    Url = "https://example.com/csharp",
+                    UrlToImage = "https://example.com/csharp.jpg",
+                    PublishedAt = DateTime.Now,
+                    Content = "Contenido del artículo..."
+                };
+
+                var article2 = new ArticleDto
+                {
+                    Author = "Jane Smith",
+                    Title = "IA en el desarrollo",
+                    Description = "Cómo la IA está cambiando el desarrollo de software.",
+                    Url = "https://example.com/ia",
+                    UrlToImage = "https://example.com/ia.jpg",
+                    PublishedAt = DateTime.Now,
+                    Content = "Más contenido..."
+                };
+
+                articleCollection.Add(article1);
+                articleCollection.Add(article2);
+
+                var alert = await _alertRepository.GetAsync(1, includeDetails: true);
+                int cantidad = (alert.Notificaciones == null || !alert.Notificaciones.Any()) ? 0 : alert.Notificaciones.Count;
+
+                // Act
+                var notificacionCreada = await _notificationManager.CrearNotificacion(alert, articleCollection);
+
+                // Assert
+                var dbContext = await _dbContextProvider.GetDbContextAsync();
+                var notif = dbContext.NotificationEntidad.FirstOrDefault(t => t.Id == notificacionCreada.Id);
+
+                alert.Notificaciones.Count.ShouldBe(cantidad + 1);
+                notif.ShouldNotBeNull();
+                notif.CantidadNoticiasNuevas.ShouldBe(2);
+                notif.CadenaBusqueda.ShouldBe(alert.CadenaBusqueda);
+            }
+        }
+
+
+
     }
-
-    
-
-
-
-
-
-
 }
+
 
