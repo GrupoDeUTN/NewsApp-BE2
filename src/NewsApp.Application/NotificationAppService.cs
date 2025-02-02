@@ -43,22 +43,7 @@ namespace NewsApp
             return ObjectMapper.Map<ICollection<NotificationEntidad>, ICollection<NotificationDto>>(notifications);
         }
 
-        // Obtener una notificación específica asociada al usuario actual
-        public async Task<NotificationDto> GetNotificationAsync(int id)
-        {
-            var userGuid = CurrentUser.Id.GetValueOrDefault();
-            var identityUser = await _userManager.FindByIdAsync(userGuid.ToString());
 
-            var notification = await _repository.FirstOrDefaultAsync(
-                n => n.Id == id && n.Alert != null && n.Alert.UserId == identityUser.Id);
-
-            if (notification == null)
-            {
-                throw new Exception("Notificación no encontrada o no pertenece al usuario actual.");
-            }
-
-            return ObjectMapper.Map<NotificationEntidad, NotificationDto>(notification);
-        }
 
 
 

@@ -186,13 +186,4 @@ namespace NewsApp.Themes
     }
 }
 
-// Test de sercios que faltan: 
-//AlertAppService
-//NotificationAppService
-//NewsBackgroundAppService 
-//MonitoredNewsApiAppService   LISTO
-
-//Test de dominios que falta:
-//AccesoApiLogger
-//NotificationManager
 

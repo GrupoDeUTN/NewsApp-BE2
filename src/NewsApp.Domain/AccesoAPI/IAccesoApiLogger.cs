@@ -9,6 +9,6 @@ namespace NewsApp.AccesoAPI
 {
     public interface IAccesoApiLogger : IDomainService
     {
-        Task LogAccessAsync(Guid userId, DateTime inicio, DateTime fin, string? errorMessage = null);
+        Task<AccesoApiEntidad> LogAccessAsync(Guid userId, DateTime inicio, DateTime fin, string? errorMessage = null);
     }
 }

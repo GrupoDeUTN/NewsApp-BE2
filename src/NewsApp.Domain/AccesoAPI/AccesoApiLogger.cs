@@ -14,7 +14,7 @@ namespace NewsApp.AccesoAPI
             _repository = repository;
         }
 
-        public async Task LogAccessAsync(Guid userId, DateTime inicio, DateTime fin, string? errorMessage = null)
+        public async Task<AccesoApiEntidad> LogAccessAsync(Guid userId, DateTime inicio, DateTime fin, string? errorMessage = null)
         {
             var accesoApi = new AccesoApiEntidad
             {
@@ -26,6 +26,8 @@ namespace NewsApp.AccesoAPI
             };
 
             await _repository.InsertAsync(accesoApi);
+
+            return accesoApi;
         }
     }
 

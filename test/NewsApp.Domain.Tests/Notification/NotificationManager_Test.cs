@@ -27,21 +27,16 @@ namespace NewsApp.Notification
     {
 
         private readonly IRepository<AlertEntidad, int> _alertRepository;
-        private readonly IRepository<NotificationEntidad, int> _notificationRepository;
         private readonly INotificationManager _notificationManager;
-
-        private readonly IdentityUserManager _identityUserManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IDbContextProvider<NewsAppDbContext> _dbContextProvider;
 
         public NotificationManager_Test()
         {
-            _notificationRepository = GetRequiredService<IRepository<NotificationEntidad, int>>();
             _notificationManager = GetRequiredService<INotificationManager>();
             _alertRepository = GetRequiredService<IRepository<AlertEntidad, int>>();
             _unitOfWorkManager = GetRequiredService<IUnitOfWorkManager>();
             _dbContextProvider = GetRequiredService<IDbContextProvider<NewsAppDbContext>>();
-            _identityUserManager = GetRequiredService<IdentityUserManager>();
 
         }
 

@@ -8,14 +8,15 @@ namespace NewsApp.Notification
 {
     public interface INotificationAppService : IApplicationService
     {
+        Task DeleteAsync(int id);
 
-      
-            Task<ICollection<NotificationDto>> GetNotificationsAsync();
+        Task<ICollection<NotificationDto>> GetNotificationsAsync();
+        Task<ICollection<NotificationDto>> GetNotificationsByAlertIdAsync(int alertId);
 
-            Task<NotificationDto> GetNotificationAsync(int id);
+        //Task<NotificationDto> GetNotificationAsync(int id);
 
-            
-        
+
+
 
     }
 }

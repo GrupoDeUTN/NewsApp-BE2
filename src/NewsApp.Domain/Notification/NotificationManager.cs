@@ -35,6 +35,5 @@ namespace NewsApp.Notification
         }
     }
 
-    // ALERTA { NOTIF1, NOTIF2} ... .
    
 }  
