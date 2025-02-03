@@ -18,7 +18,7 @@ namespace NewsApp.Notification
             _notificationRepository = notificationRepository;
         }
 
-        public async Task<NotificationEntidad> CrearNotificacion(AlertEntidad alerta, ICollection<ArticleDto> noticias)
+        public async Task<NotificationEntidad> CrearNotificacion(AlertEntidad alerta, ICollection<NewsDto> noticias)
         {
             var notificacion = new NotificationEntidad
             {

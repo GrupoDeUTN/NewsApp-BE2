@@ -12,9 +12,8 @@ namespace NewsApp.Notification
     public interface INotificationManager : IDomainService
     {
 
-        Task<NotificationEntidad> CrearNotificacion(AlertEntidad alerta, ICollection<ArticleDto> noticias);
+        Task<NotificationEntidad> CrearNotificacion(AlertEntidad alerta, ICollection<NewsDto> noticias);
 
 
     }
 }
-

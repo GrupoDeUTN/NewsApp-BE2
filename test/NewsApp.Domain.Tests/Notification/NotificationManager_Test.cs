@@ -46,9 +46,9 @@ namespace NewsApp.Notification
             using (var uow = _unitOfWorkManager.Begin())
             {
                 // Arrange
-                var articleCollection = new List<ArticleDto>();
+                var newsCollection = new List<NewsDto>();
 
-                var article1 = new ArticleDto
+                var new1 = new NewsDto
                 {
                     Author = "John Doe",
                     Title = "C# en 2025",
@@ -59,7 +59,7 @@ namespace NewsApp.Notification
                     Content = "Contenido del artículo..."
                 };
 
-                var article2 = new ArticleDto
+                var new2 = new NewsDto
                 {
                     Author = "Jane Smith",
                     Title = "IA en el desarrollo",
@@ -70,14 +70,14 @@ namespace NewsApp.Notification
                     Content = "Más contenido..."
                 };
 
-                articleCollection.Add(article1);
-                articleCollection.Add(article2);
+                newsCollection.Add(new1);
+                newsCollection.Add(new2);
 
                 var alert = await _alertRepository.GetAsync(1, includeDetails: true);
                 int cantidad = (alert.Notificaciones == null || !alert.Notificaciones.Any()) ? 0 : alert.Notificaciones.Count;
 
                 // Act
-                var notificacionCreada = await _notificationManager.CrearNotificacion(alert, articleCollection);
+                var notificacionCreada = await _notificationManager.CrearNotificacion(alert, newsCollection);
 
                 // Assert
                 var dbContext = await _dbContextProvider.GetDbContextAsync();
