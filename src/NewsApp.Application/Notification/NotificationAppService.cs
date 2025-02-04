@@ -46,10 +46,6 @@ namespace NewsApp.Notification
             return ObjectMapper.Map<ICollection<NotificationEntidad>, ICollection<NotificationDto>>(notifications);
         }
 
-
-
-
-
         // Eliminar una notificación
         public async Task DeleteAsync(int id)
         {
