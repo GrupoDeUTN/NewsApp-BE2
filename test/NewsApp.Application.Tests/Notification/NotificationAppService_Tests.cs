@@ -10,6 +10,7 @@ using System.Linq;
 using NewsApp.Notification;
 using NewsApp.Alert;
 using IdentityUser = Volo.Abp.Identity.IdentityUser;
+using NewsApp.News;
 
 namespace NewsApp.Notification
 {
@@ -141,6 +142,34 @@ namespace NewsApp.Notification
             // Assert
             notifications.ShouldNotBeNull();
             notifications.Count.ShouldBe(2);
+        }
+
+        [Fact]
+        public async Task Should_Create_Notification()
+        {
+            // Arrange
+            var currentUser = await _userManager.FindByIdAsync("2e701e62-0953-4dd3-910b-dc6cc93ccb0d");
+            var alert = await _alertRepository.InsertAsync(new AlertEntidad
+            {
+                FechaCreacion = DateTime.Now,
+                Activa = true,
+                CadenaBusqueda = "news test",
+                UserId = currentUser.Id
+            }, autoSave: true);
+
+            var noticias = new List<NewsDto>
+            {
+                new NewsDto { Title = "Noticia 1", Content = "Contenido de prueba 1" },
+                new NewsDto { Title = "Noticia 2", Content = "Contenido de prueba 2" }
+            };
+
+            // Act
+            var notification = await _notificationAppService.CrearNotificacionAsync(alert.Id, noticias);
+
+            // Assert
+            notification.ShouldNotBeNull();
+            notification.AlertId.ShouldBe(alert.Id);
+            notification.CantidadNoticiasNuevas.ShouldBe(noticias.Count);
         }
     }
 }
