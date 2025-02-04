@@ -103,10 +103,4 @@ namespace NewsApp.Alert.NewsBackGround
         }
     }
 
-
-
-
-
-
-
 }

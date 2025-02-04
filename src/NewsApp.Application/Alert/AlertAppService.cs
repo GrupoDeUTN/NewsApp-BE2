@@ -40,8 +40,6 @@ namespace NewsApp.Alert
             _notificationAppService = notificationAppService;
         }
 
-
-
         public async Task<AlertDto> CreateAsync(CreateAlertDto input)
         {
             var userGuid = CurrentUser.Id.GetValueOrDefault();
@@ -56,8 +54,6 @@ namespace NewsApp.Alert
 
             return ObjectMapper.Map<AlertEntidad, AlertDto>(createdAlert);
         }
-
-
 
         // Obtener todas las alertas asociadas al usuario actual
         public async Task<ICollection<AlertDto>> GetAlertsAsync()
@@ -85,8 +81,6 @@ namespace NewsApp.Alert
 
             return ObjectMapper.Map<AlertEntidad, AlertDto>(alert);
         }
-
-
 
         // Eliminar una alerta
         public async Task DeleteAsync(int id)
@@ -146,15 +140,11 @@ namespace NewsApp.Alert
             }
         }
 
-
-
-
         private async Task<NotificationEntidad> ObtenerUltimaNotificacionAsync(int alertId)
         {
             var notificaciones = await _notificationRepository.GetListAsync(n => n.AlertId == alertId);
             return notificaciones.OrderByDescending(n => n.FechaEnvio).FirstOrDefault();
         }
-
 
         private ICollection<NewsDto> FiltrarNoticiasNuevas(AlertDto alerta, NotificationEntidad ultimaNotificacion, ICollection<NewsDto> noticias)
         {
@@ -167,7 +157,6 @@ namespace NewsApp.Alert
                 return noticias.Where(n => n.PublishedAt > ultimaNotificacion.FechaEnvio).ToList();
             }
         }
-
 
     }
 }

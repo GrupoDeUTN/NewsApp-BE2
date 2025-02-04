@@ -61,7 +61,7 @@ public class NewsAppDbContext :
 
     #region Entidades de dominio
 
-    public DbSet<Theme> Themes { get; set; }
+    public DbSet<ThemeEntidad> Themes { get; set; }
     public DbSet<NewsEntidad> NewsEntidad{ get; set; }
 
     public DbSet<AlertEntidad> AlertEntidad { get; set; } 
@@ -106,7 +106,7 @@ public NewsAppDbContext(DbContextOptions<NewsAppDbContext> options)
 
         // Entidad Themes
 
-        builder.Entity<Theme>(b =>
+        builder.Entity<ThemeEntidad>(b =>
         {
             b.ToTable(NewsAppConsts.DbTablePrefix + "Themes", NewsAppConsts.DbSchema);
             b.ConfigureByConvention();

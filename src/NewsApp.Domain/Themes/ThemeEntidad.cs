@@ -9,18 +9,18 @@ using Volo.Abp.Identity;
 
 namespace NewsApp.Themes
 {
-    public class Theme : Entity<int>
+    public class ThemeEntidad : Entity<int>
     {
         public string Name  { get; set; }
         public IdentityUser User { get; set; }
-        public ICollection<Theme> Themes { get; set;}
+        public ICollection<ThemeEntidad> Themes { get; set;}
         public int? ThemeId { get; set; }  // This represents the parent theme's ID
 
         public ICollection<NewsEntidad> listNews { get; set; } 
 
-        public Theme()
+        public ThemeEntidad()
         {
-            this.Themes = new List<Theme>();
+            this.Themes = new List<ThemeEntidad>();
             this.listNews = new List<NewsEntidad>();
 
         }

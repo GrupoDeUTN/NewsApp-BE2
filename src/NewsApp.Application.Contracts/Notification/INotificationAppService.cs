@@ -17,9 +17,6 @@ namespace NewsApp.Notification
         //Task<NotificationDto> GetNotificationAsync(int id);
 
         Task<NotificationDto> CrearNotificacionAsync(int idAlerta, ICollection<NewsDto> noticias);
-
-
-
-
+    
     }
 }

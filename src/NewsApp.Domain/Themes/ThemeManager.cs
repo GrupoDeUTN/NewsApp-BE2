@@ -14,17 +14,17 @@ namespace NewsApp.Themes
 {
     public class ThemeManager : DomainService, IThemeManager
     {
-        private readonly IRepository<Theme, int> _repository;
+        private readonly IRepository<ThemeEntidad, int> _repository;
         private readonly IRepository<NewsEntidad, int> _repositoryNew;
-        public ThemeManager(IRepository<Theme, int> repository, IRepository<NewsEntidad, int> repositoryNew)
+        public ThemeManager(IRepository<ThemeEntidad, int> repository, IRepository<NewsEntidad, int> repositoryNew)
         {
             _repository = repository;
             _repositoryNew = repositoryNew;
         }
 
-        public async Task<Theme> CreateAsyncOrUpdate(int? id, string name, int? parentId, Volo.Abp.Identity.IdentityUser identityUser)
+        public async Task<ThemeEntidad> CreateAsyncOrUpdate(int? id, string name, int? parentId, Volo.Abp.Identity.IdentityUser identityUser)
         {
-            Theme theme = null;            
+            ThemeEntidad theme = null;            
 
             if (id is not null)
             {
@@ -36,7 +36,7 @@ namespace NewsApp.Themes
             else
             {
                 //Si el id es nulo, es un tema nuevo
-                theme = new Theme { Name = name, User = identityUser };
+                theme = new ThemeEntidad { Name = name, User = identityUser };
 
                 if (parentId is not null)
                 {
@@ -73,7 +73,7 @@ namespace NewsApp.Themes
 
 
         //Elimina todo las noticias y capertas de un tema, luego se elimna el mismo
-        public async Task DeleteThemeRecursively(Theme theme)
+        public async Task DeleteThemeRecursively(ThemeEntidad theme)
         {
             // Primero, eliminar todas las noticias asociadas al tema actual
             if (theme.listNews != null && theme.listNews.Any())
@@ -96,7 +96,7 @@ namespace NewsApp.Themes
 
 
         //Se encarga de eliminar todos las noticias de un tema
-        public async Task DeleteNewsFromTheme(Theme theme)
+        public async Task DeleteNewsFromTheme(ThemeEntidad theme)
         {
 
             if (theme.listNews != null && theme.listNews.Any())

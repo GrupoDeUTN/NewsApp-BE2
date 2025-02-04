@@ -23,7 +23,7 @@ namespace NewsApp.Theme
     public class ThemeManager_Test : NewsAppDomainTestBase
     {
         private readonly IThemeManager _themeManager;
-        private readonly IRepository<Themes.Theme, int> _themeRepository;
+        private readonly IRepository<Themes.ThemeEntidad, int> _themeRepository;
         private readonly UserManager<Volo.Abp.Identity.IdentityUser> _userManager;
         private readonly IRepository<NewsEntidad, int> _newsRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
@@ -31,16 +31,13 @@ namespace NewsApp.Theme
         
         public ThemeManager_Test()
         {
-            _themeRepository = GetRequiredService<IRepository<Themes.Theme, int>>();
+            _themeRepository = GetRequiredService<IRepository<Themes.ThemeEntidad, int>>();
             _newsRepository = GetRequiredService<IRepository<NewsEntidad, int>>();
             _themeManager = GetRequiredService<IThemeManager>();
             _unitOfWorkManager = GetRequiredService<IUnitOfWorkManager>();
             _dbContextProvider = GetRequiredService<IDbContextProvider<NewsAppDbContext>>();
             _userManager = GetRequiredService<UserManager<Volo.Abp.Identity.IdentityUser>>();
         }
-
-
-
 
         [Fact]
         public async Task Should_Create_New_Theme()

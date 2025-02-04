@@ -8,12 +8,12 @@ namespace NewsApp.Themes
     public interface IThemeManager : IDomainService
     {
   
-        Task<Theme> CreateAsyncOrUpdate(int? id, string name, int? parentId, Volo.Abp.Identity.IdentityUser identityUser);
+        Task<ThemeEntidad> CreateAsyncOrUpdate(int? id, string name, int? parentId, Volo.Abp.Identity.IdentityUser identityUser);
 
         //Task AddNewAsync(int idNoticia, Theme theme);
 
-        Task DeleteThemeRecursively(Theme theme);
+        Task DeleteThemeRecursively(ThemeEntidad theme);
 
-        Task DeleteNewsFromTheme(Theme theme);
+        Task DeleteNewsFromTheme(ThemeEntidad theme);
     }
 }

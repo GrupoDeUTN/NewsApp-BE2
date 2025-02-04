@@ -20,7 +20,7 @@ namespace NewsApp.Theme
     [Authorize]
     public class ThemeAppService : NewsAppAppService, IThemeAppService
     {
-        private readonly IRepository<Theme, int> _repository;
+        private readonly IRepository<ThemeEntidad, int> _repository;
         private readonly IRepository<NewsEntidad, int> _repositoryNews;
         private readonly UserManager<Volo.Abp.Identity.IdentityUser> _userManager;
         private readonly ThemeManager _themeManager;
@@ -28,7 +28,7 @@ namespace NewsApp.Theme
         private readonly NewsManager _newsManager;
         private readonly ICurrentUser _currentUser;
 
-        public ThemeAppService(IRepository<Theme, int> repository, UserManager<Volo.Abp.Identity.IdentityUser> userManager, ThemeManager themeManager,
+        public ThemeAppService(IRepository<ThemeEntidad, int> repository, UserManager<Volo.Abp.Identity.IdentityUser> userManager, ThemeManager themeManager,
             INewsAppService newsAppService, NewsManager newsManager, IRepository<NewsEntidad, int> repositoryNews, ICurrentUser currentUser)
         {
             _repository = repository;
@@ -88,7 +88,7 @@ namespace NewsApp.Theme
 
             var userThemes = themes.Where(x => x.User == identityUser && x.ThemeId == null).ToList();
 
-            return ObjectMapper.Map<ICollection<Theme>, ICollection<ThemeDto>>(userThemes);
+            return ObjectMapper.Map<ICollection<ThemeEntidad>, ICollection<ThemeDto>>(userThemes);
         }
 
         public async Task<ThemeDto> GetThemesAsync(int id)
@@ -102,7 +102,7 @@ namespace NewsApp.Theme
             var query = queryable.Where(x => x.Id == id && x.User == identityUser);
             var theme = await AsyncExecuter.FirstOrDefaultAsync(query);
 
-            return ObjectMapper.Map<Theme, ThemeDto>(theme);
+            return ObjectMapper.Map<ThemeEntidad, ThemeDto>(theme);
 
         }
 
@@ -123,7 +123,7 @@ namespace NewsApp.Theme
                 await _repository.UpdateAsync(theme, autoSave: true);
             }
 
-            return ObjectMapper.Map<Theme, ThemeDto>(theme);
+            return ObjectMapper.Map<ThemeEntidad, ThemeDto>(theme);
         }
 
 
