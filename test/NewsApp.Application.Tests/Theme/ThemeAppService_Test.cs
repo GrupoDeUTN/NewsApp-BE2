@@ -25,7 +25,7 @@ namespace NewsApp.Theme
         private readonly IThemeAppService _themeAppService;
         private readonly IDbContextProvider<NewsAppDbContext> _dbContextProvider;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-        private readonly IRepository<Themes.Theme, int> _themeRepository;
+        private readonly IRepository<Themes.ThemeEntidad, int> _themeRepository;
         private readonly IRepository<NewsEntidad, int> _newsRepository;
         private readonly UserManager<Volo.Abp.Identity.IdentityUser> _userManager;
 
@@ -34,7 +34,7 @@ namespace NewsApp.Theme
             _themeAppService = GetRequiredService<IThemeAppService>();
             _dbContextProvider = GetRequiredService<IDbContextProvider<NewsAppDbContext>>();
             _unitOfWorkManager = GetRequiredService<IUnitOfWorkManager>();
-            _themeRepository = GetRequiredService<IRepository<Themes.Theme, int>>();
+            _themeRepository = GetRequiredService<IRepository<Themes.ThemeEntidad, int>>();
             _newsRepository = GetRequiredService<IRepository<NewsEntidad, int>>();
             _userManager = GetRequiredService<UserManager<Volo.Abp.Identity.IdentityUser>>();
         }
@@ -160,8 +160,8 @@ namespace NewsApp.Theme
         {
             //Arrage
             var themeId = 1;
-            var busqueda = "FMI";
-            var tituloEsperado = "Here’s Why FMI Large Cap Equity Strategy Sold its 2.7% Position in Omnicom Group (OMC)";
+            var busqueda = "Milei";
+            var tituloEsperado = "Argentina's Milei welcomes Venezuelan opposition leader Gonzalez";
 
 
             // Act
