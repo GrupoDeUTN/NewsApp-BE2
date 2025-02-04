@@ -11,18 +11,21 @@ namespace NewsApp.Alert
 
         public interface IAlertAppService : IApplicationService
         {
-            Task<ICollection<AlertDto>> GetAlertsAsync();
-
-            Task<AlertDto> GetAlertAsync(int id);
-
 
             Task<AlertDto> CreateAsync(CreateAlertDto input);
 
+            Task<ICollection<AlertDto>> GetAlertsAsync();
+
+            Task<AlertDto> GetAlertAsync(int id);
+                    
             Task DeleteAsync(int id);
-        Task<ICollection<AlertDto>> GetAlertsActivasAsync();
-        Task<Guid> GetUserIdByAlertIdAsync(int alertId);
-        Task ProcessNewsAlertsAsync(ICollection<AlertDto> alertas);
-    }
+            
+            Task<ICollection<AlertDto>> GetAlertsActivasAsync();
+               
+            Task<Guid> GetUserIdByAlertIdAsync(int alertId);
+
+            Task ProcessNewsAlertsAsync(ICollection<AlertDto> alertas);
+        }
 
 
     

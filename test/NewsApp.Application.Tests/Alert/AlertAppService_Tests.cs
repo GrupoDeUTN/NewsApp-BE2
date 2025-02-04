@@ -3,12 +3,9 @@ using System.Threading.Tasks;
 using Shouldly;
 using Xunit;
 using Volo.Abp.Domain.Repositories;
-using Volo.Abp.Identity;
 using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
-using System.Linq;
-using NewsApp.Alert;
 using IdentityUser = Volo.Abp.Identity.IdentityUser;
+
 
 namespace NewsApp.Alert
 {
@@ -120,5 +117,47 @@ namespace NewsApp.Alert
                 await _alertAppService.DeleteAsync(nonExistentId)
             );
         }
+
+        [Fact]
+        public async Task Should_Get_Active_Alerts()
+        {
+            // Arrange
+
+            // Act
+            var result = await _alertAppService.GetAlertsActivasAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(1, result.Count);
+        }
+
+        [Fact]
+        public async Task Should_Get_UserId_When_Alert_Exists()
+        {
+            // Arrange
+            var alertId = 1;
+            var currentUser = await _userManager.FindByIdAsync("2e701e62-0953-4dd3-910b-dc6cc93ccb0d");
+
+            // Act
+            var result = await _alertAppService.GetUserIdByAlertIdAsync(alertId);
+
+            // Assert
+            Assert.Equal(currentUser.Id, result);
+        }
+
+        [Fact]
+        public async Task Should_Throw_Exception_When_Alert_Does_Not_Exist()
+        {
+            // Arrange
+            var alertId = 10;
+
+            // Act & Assert
+            await Should.ThrowAsync<Exception>(async () =>
+                await _alertAppService.GetUserIdByAlertIdAsync(alertId)
+            );
+        }
+
+
+        //TEST: ProcessNewsAlertsAsync(ICollection<AlertDto> alertas)  DEFINIDO EN NewsBackGround_Test
     }
 }
