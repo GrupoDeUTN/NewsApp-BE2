@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NewsApp.News;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace NewsApp.Notification
         Task<ICollection<NotificationDto>> GetNotificationsByAlertIdAsync(int alertId);
 
         //Task<NotificationDto> GetNotificationAsync(int id);
+
+        Task<NotificationDto> CrearNotificacionAsync(int idAlerta, ICollection<NewsDto> noticias);
 
 
 

@@ -57,7 +57,25 @@ namespace NewsApp.News
             return noticia;
         }
 
+        public async Task<ICollection<NewsDto>> AsyncSearch(string query, Guid userId)
+        {
+            var inicio = DateTime.Now;
+            
 
+            try
+            {
+                var news = await _newsService.GetNewsAsync(query);
+                var newsDto = ObjectMapper.Map<ICollection<ArticleDto>, ICollection<NewsDto>>(news);
+
+                await _accesoApiLogger.LogAccessAsync(userId, inicio, DateTime.Now);
+                return newsDto;
+            }
+            catch (Exception ex)
+            {
+                await _accesoApiLogger.LogAccessAsync(userId, inicio, DateTime.Now, ex.Message);
+                throw;
+            }
+        }
 
     }
 }

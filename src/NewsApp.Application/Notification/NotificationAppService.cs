@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using NewsApp.Alert;
 using NewsApp.News;
-using NewsApp.Notification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +11,7 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
 
-namespace NewsApp
+namespace NewsApp.Notification
 {
     [Authorize]
     public class NotificationAppService : NewsAppAppService, INotificationAppService
@@ -20,15 +19,19 @@ namespace NewsApp
         private readonly IRepository<NotificationEntidad, int> _repository;
         private readonly IRepository<AlertEntidad, int> _alertRepository;
         private readonly UserManager<Volo.Abp.Identity.IdentityUser> _userManager;
+        private readonly INotificationManager _notificationManager;
+
 
         public NotificationAppService(
             IRepository<NotificationEntidad, int> repository,
             IRepository<AlertEntidad, int> alertRepository,
-            UserManager<Volo.Abp.Identity.IdentityUser> userManager)
+            UserManager<Volo.Abp.Identity.IdentityUser> userManager,
+            INotificationManager notificationManager)
         {
             _repository = repository;
             _alertRepository = alertRepository;
             _userManager = userManager;
+            _notificationManager = notificationManager;
         }
 
         // Obtener todas las notificaciones asociadas al usuario actual
@@ -84,6 +87,30 @@ namespace NewsApp
             // Mapear entidades a DTOs
             return ObjectMapper.Map<ICollection<NotificationEntidad>, ICollection<NotificationDto>>(notifications);
         }
+
+
+
+        [AllowAnonymous] // Permite acceso sin autenticación
+        public async Task<NotificationDto> CrearNotificacionAsync(int idAlerta, ICollection<NewsDto> noticias)
+        {
+            // Obtener la alerta asociada al DTO
+            var alerta = await _alertRepository.FirstOrDefaultAsync(a => a.Id == idAlerta);
+            if (alerta == null)
+            {
+                throw new Exception("La alerta no existe.");
+            }
+
+            // Crear la notificación utilizando el NotificationManager
+
+            var notificacion = await _notificationManager.CrearNotificacion(alerta, noticias);
+
+            // Mapear la entidad a DTO y retornar
+            return ObjectMapper.Map<NotificationEntidad, NotificationDto>(notificacion);
+        }
+
+
+
+
 
     }
 }

@@ -22,14 +22,6 @@ namespace NewsApp.Themes
         Task<NewsDto> AgregarNoticia(int idTema, string busqueda, string titulo);
 
         Task DeleteNewFromTheme(int idNew, int idTheme);
-
-
-
-
-
-
-
-
     }
 }
 

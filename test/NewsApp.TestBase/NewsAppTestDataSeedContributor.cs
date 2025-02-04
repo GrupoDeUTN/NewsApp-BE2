@@ -43,6 +43,23 @@ public class NewsAppTestDataSeedContributor : IDataSeedContributor, ITransientDe
         IdentityUser identityUser1 = new IdentityUser(Guid.Parse("2e701e62-0953-4dd3-910b-dc6cc93ccb0d"), "admin", "admin@abp.io");
         await _identityUserManager.CreateAsync(identityUser1, "1q2w3E*");
 
+
+        // ALERTAS 
+
+        await _alertRepository.InsertAsync(new AlertEntidad()
+        {
+            Activa = true,
+            CadenaBusqueda = "deportes",
+            UserId = identityUser1.Id,
+            Notificaciones = new List<NotificationEntidad>(),
+            FechaCreacion = DateTime.Now.AddDays(-10)
+
+        });
+
+
+
+
+
         // TEMAS: Guardamos los temas y forzamos el guardado en la BD antes de insertar noticias
         var theme1 = await _themeRepository.InsertAsync(new Theme { Name = "Primer tema", User = identityUser1, UserId = identityUser1.Id });
         var theme2 = await _themeRepository.InsertAsync(new Theme { Name = "Segundo tema", User = identityUser1, UserId = identityUser1.Id });
@@ -55,25 +72,6 @@ public class NewsAppTestDataSeedContributor : IDataSeedContributor, ITransientDe
 
         // Añadir la noticia al tema
         theme2.listNews.Add(new1);
-
-
-
-        // ALERTAS 
-
-        await _alertRepository.InsertAsync(new AlertEntidad()
-        {
-            Activa = true,
-            CadenaBusqueda = "FMI",
-            UserId = identityUser1.Id,
-            Notificaciones = new List<NotificationEntidad>()
-
-    }) ; 
-
-
-
-
-
-
 
 
 

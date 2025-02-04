@@ -6,11 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Volo.Abp.Identity;
-using NewsApp.AccesoApi;
 using NewsApp.AccesoAPI;
 
 
-namespace NewsApp
+namespace NewsApp.AccesoApi
 {
     [Authorize]
     public class MonitoredNewsApiAppService : NewsAppAppService, IMonitoredNewsApiAppService

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using NewsApp.News;
 using NewsApp.Permissions;
+using NewsApp.Themes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ using Volo.Abp.Identity;
 using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
 
-namespace NewsApp.Themes
+namespace NewsApp.Theme
 {
     [Authorize]
     public class ThemeAppService : NewsAppAppService, IThemeAppService
@@ -25,16 +26,56 @@ namespace NewsApp.Themes
         private readonly ThemeManager _themeManager;
         private readonly INewsAppService _newsAppService;
         private readonly NewsManager _newsManager;
+        private readonly ICurrentUser _currentUser;
 
         public ThemeAppService(IRepository<Theme, int> repository, UserManager<Volo.Abp.Identity.IdentityUser> userManager, ThemeManager themeManager,
-            INewsAppService newsAppService, NewsManager newsManager, IRepository<NewsEntidad, int> repositoryNews)
+            INewsAppService newsAppService, NewsManager newsManager, IRepository<NewsEntidad, int> repositoryNews, ICurrentUser currentUser)
         {
             _repository = repository;
             _userManager = userManager;
             _themeManager = themeManager;
             _newsAppService = newsAppService;
             _newsManager = newsManager;
-            _repositoryNews = repositoryNews;   
+            _repositoryNews = repositoryNews;
+            _currentUser = currentUser;
+        }
+
+        public async Task<NewsDto> AgregarNoticia(int idTema, string busqueda, string titulo)
+
+        {
+            //Obtener el tema 
+            var userGuid = _currentUser.Id.GetValueOrDefault();
+
+            // Obtener el tema directamente usando `FirstOrDefaultAsync` del repositorio
+            var theme = await _repository.FirstOrDefaultAsync(
+                x => x.Id == idTema && x.UserId == userGuid
+
+            );
+
+            if (theme == null)
+            {
+                throw new Exception("El tema no existe o no pertenece al usuario actual.");
+            }
+
+            //Obtener noticia
+            var resultados = await _newsAppService.Search(busqueda);
+
+            var noticia = _newsAppService.SeleccionarNewsDeBusqueda(resultados, titulo);
+
+            var noticiaEntidad = ObjectMapper.Map<NewsDto, NewsEntidad>(noticia);
+
+            //Agregar noticia al tema
+
+            noticiaEntidad.ThemeId = idTema;
+
+            var IdNoticia = await _newsManager.CreateAsyncNews(noticiaEntidad);
+
+            await _repository.UpdateAsync(theme, autoSave: true);
+
+            noticia.Id = IdNoticia;
+
+            return noticia;
+
         }
 
         public async Task<ICollection<ThemeDto>> GetThemesAsync()
@@ -43,9 +84,9 @@ namespace NewsApp.Themes
 
             var identityUser = await _userManager.FindByIdAsync(userGuid.ToString());
 
-            var themes = await _repository.GetListAsync(includeDetails: true ) ;
-          
-            var userThemes = themes.Where(x => x.User == identityUser && x.ThemeId == null ).ToList();
+            var themes = await _repository.GetListAsync(includeDetails: true);
+
+            var userThemes = themes.Where(x => x.User == identityUser && x.ThemeId == null).ToList();
 
             return ObjectMapper.Map<ICollection<Theme>, ICollection<ThemeDto>>(userThemes);
         }
@@ -57,7 +98,7 @@ namespace NewsApp.Themes
             var identityUser = await _userManager.FindByIdAsync(userGuid.ToString());
 
             // Obtener el tema
-            var queryable = await _repository.WithDetailsAsync(x => x.listNews, x=>x.Themes); // Incluye las noticias del tema
+            var queryable = await _repository.WithDetailsAsync(x => x.listNews, x => x.Themes); // Incluye las noticias del tema
             var query = queryable.Where(x => x.Id == id && x.User == identityUser);
             var theme = await AsyncExecuter.FirstOrDefaultAsync(query);
 
@@ -85,7 +126,7 @@ namespace NewsApp.Themes
             return ObjectMapper.Map<Theme, ThemeDto>(theme);
         }
 
-        
+
 
 
 
@@ -112,40 +153,6 @@ namespace NewsApp.Themes
 
 
 
-        public async Task<NewsDto> AgregarNoticia(int idTema, string busqueda, string titulo)
-
-        {
-            //Obtener el tema 
-            var userGuid = CurrentUser.Id.GetValueOrDefault();
-
-            var identityUser = await _userManager.FindByIdAsync(userGuid.ToString());
-
-            var queryable = await _repository.WithDetailsAsync(x => x.Themes);
-
-            var query = queryable.Where(x => x.Id == idTema && x.User == identityUser);
-
-            var theme = await AsyncExecuter.FirstOrDefaultAsync(query);
-
-            //Obtener noticia
-            var resultados = await _newsAppService.Search(busqueda);
-
-            var noticia = _newsAppService.SeleccionarNewsDeBusqueda(resultados, titulo);
-
-            var noticiaEntidad = ObjectMapper.Map<NewsDto, NewsEntidad>(noticia);
-
-            //Agregar noticia al tema
-
-            noticiaEntidad.ThemeId = idTema;
-
-            var IdNoticia = await _newsManager.CreateAsyncNews(noticiaEntidad);
-
-            await _repository.UpdateAsync(theme, autoSave: true);
-
-            noticia.Id = IdNoticia;
-
-            return noticia;
-
-        }
 
 
 

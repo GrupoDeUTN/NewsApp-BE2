@@ -161,7 +161,7 @@ namespace NewsApp.Theme
             //Arrage
             var themeId = 1;
             var busqueda = "FMI";
-            var tituloEsperado = "Wrapped: My Ten Most-Read Forbes Pieces For 2024";
+            var tituloEsperado = "Here’s Why FMI Large Cap Equity Strategy Sold its 2.7% Position in Omnicom Group (OMC)";
 
 
             // Act

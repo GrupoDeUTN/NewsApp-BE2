@@ -39,6 +39,9 @@ namespace NewsApp.Theme
             _userManager = GetRequiredService<UserManager<Volo.Abp.Identity.IdentityUser>>();
         }
 
+
+
+
         [Fact]
         public async Task Should_Create_New_Theme()
         {

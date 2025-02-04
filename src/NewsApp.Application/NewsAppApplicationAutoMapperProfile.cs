@@ -22,7 +22,7 @@ public class NewsAppApplicationAutoMapperProfile : Profile
         CreateMap<IdentityUser, UserDto>();
         CreateMap<NewsDto, ArticleDto>().ReverseMap();
         CreateMap<NewsEntidad, NewsDto>().ReverseMap();
-        CreateMap<AlertEntidad, AlertDto>();
+        CreateMap<AlertEntidad, AlertDto>().ReverseMap();
         CreateMap<NotificationEntidad, NotificationDto>();
         CreateMap<AccesoApiEntidad,AccesoApiDto>();
     }

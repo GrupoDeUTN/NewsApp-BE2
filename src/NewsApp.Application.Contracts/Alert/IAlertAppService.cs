@@ -19,9 +19,10 @@ namespace NewsApp.Alert
             Task<AlertDto> CreateAsync(CreateAlertDto input);
 
             Task DeleteAsync(int id);
-
-
-        }
+        Task<ICollection<AlertDto>> GetAlertsActivasAsync();
+        Task<Guid> GetUserIdByAlertIdAsync(int alertId);
+        Task ProcessNewsAlertsAsync(ICollection<AlertDto> alertas);
+    }
 
 
     
